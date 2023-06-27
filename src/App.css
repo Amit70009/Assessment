@@ -1,0 +1,127 @@
+:root{--gray: #788097;
+--purple: linear-gradient(180deg, #BB67FF 0%, #C484F3 100%);
+--pink: #FF919D;
+--glass: rgba(255, 255, 255, 0.54);
+--boxShadow: 0px 19px 60px rgb(0 0 0 / 8%);
+--smboxShadow: -79px 51px 60px rgba(0, 0, 0, 0.08);
+--activeItem: #f799a354;
+
+}
+.App {
+  text-align: center;
+}
+
+.GlassAppMain {
+  background: linear-gradient(
+    106.37deg,
+    #fee1bc 29.63%,
+    #ffcfd1 51.55%,
+    #f3c6f1 90.85%
+  );
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  display: flex;
+  font-family: 'Inter', sans-serif;
+}
+
+.AppGlass {
+  display: grid;
+  height: 97%;
+  width: 97%;
+  border-radius: 2rem;
+  overflow: hidden;
+  background-color: var(--glass);
+  grid-template-columns: 15rem auto 15rem;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.main{
+  margin-top: 20px;
+  margin-bottom: 20px;
+  align-items: center;
+
+  position: relative;
+}
+
+.header{
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.button{
+  background-color: #4CAF50;
+  width: 250px;
+  height: 40px;
+  margin-left: 80px;
+}
+
+.left{
+  padding-left: 20px;
+}
+
+.img{
+ width: 50px;
+ margin-left: 50px;
+}
+.nav{
+  margin-left: 60px;
+}
+
+.loginbtn{
+  margin-right: 10px;
+}
+
+.mainimg{
+  height: 100%;
+  width: 90%;
+  background-image: -moz-element();
+  display: flex;
+  align-items: center;
+}
+
+.Profile{
+ margin-left: 30%;
+ margin-top: 10%;
+}
+
+.carousel{
+  height: 40vh;
+}
+
+.backg{
+  background-image: url(https://c4.wallpaperflare.com/wallpaper/607/657/103/beach-4k-full-screen-hd-wallpaper-preview.jpg);
+}

@@ -1,0 +1,31 @@
+.Setting {
+margin-top: 3rem;
+margin-left: 3rem;
+}
+
+.MyProfile {
+    margin-top: 2rem;
+    background: linear-gradient(
+    106.37deg,
+    #fee1bc 29.63%,
+    #ffcfd1 51.55%,
+    #f3c6f1 90.85%
+  );
+  border-radius: 0.1rem;
+  height: 50%;
+  display: grid;
+  height: 97%;
+  width: 97%;
+  border-radius: 0.9rem;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+ 
+
+}
+
+.Details>span {
+margin-left: 2rem;
+margin-top: 1rem;
+align-items: center;
+}
+
