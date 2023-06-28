@@ -12,7 +12,8 @@
 .Assessment{
     margin-top: 3rem;
     margin-left: 2rem;
-    display: block;
+    display: flex;
+    gap: 20rem;
 }
 
 .posts {

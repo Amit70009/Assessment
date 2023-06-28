@@ -8,7 +8,9 @@ import { Link } from 'react-router-dom';
 import AssessmentPage from "./Assessment/Assessment"
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
-
+import AssessSetting from "./Assessment/AssessSetting";
+import ViewQuestion from "./Assessment/ViewQuestion";
+import EmailPage from "./Email/Email"
 
 
 
@@ -25,8 +27,10 @@ export default function DashBoard() {
 <Route  path='/assessment' element={<AssessmentPage />}></Route>
 <Route  path='/result' element={<ResultPage />}></Route>
 <Route  path='/analytic' element={<AnalyticsPage />}></Route>
+<Route  path='/email' element={<EmailPage />}></Route>
 <Route  path='/setting' element={<SettingPage />}></Route>
-
+<Route  path='/setting/assessmentsetting' element={<AssessSetting />}></Route>
+<Route  path='/setting/viewquestion' element={<ViewQuestion />}></Route>
 </Routes>
 </div>
 <div>

@@ -1,0 +1,48 @@
+.main>button{
+    margin-right: 1rem;
+}
+
+.checkbox{
+    display: flex;
+    align-items: baseline;
+}
+
+.checkbox>span{
+    gap: 3rem;
+}
+
+.NumberField{
+    width: 3rem;
+}
+
+.Number{
+    align-items: right;
+    justify-content: end;
+}
+
+.Required{
+    align-items: left;
+    justify-content: center;
+    left: 1rem;
+}
+
+.foot-modal{
+    height: 15vh !important;
+}
+
+.modal-set{
+    left: auto;
+}
+
+.modal-dialog{
+    overflow-y: initial !important
+}
+.Top-modal{
+    height: 50vh;
+    overflow-y: auto;
+}
+
+.checkbox-number{
+    overflow-y: initial !important;
+    left: 2rem !important;
+}

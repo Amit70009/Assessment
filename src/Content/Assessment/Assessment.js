@@ -21,7 +21,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Draggable from 'react-draggable';
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Slide from '@mui/material/Slide';
 import ListItem from '@mui/material/ListItem';
 import List from '@mui/material/List';
@@ -32,6 +32,8 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import CloseIcon from '@mui/icons-material/Close';
 import ListItemText from '@mui/material/ListItemText';
+import Pagination from '@mui/material/Pagination';
+import Stack from '@mui/material/Stack';
 
 export default function Assessment() {
   const {UniqueID} = useParams()
@@ -42,6 +44,12 @@ export default function Assessment() {
     const [assessmentname, setAssessmentName] = React.useState(false)
     const [uniqueid, setUniqueID] = React.useState(false)
     const [assessuniqueid, setAssessUniqueID] = React.useState(false)
+    const [page, setPage] = React.useState(1);
+ 
+    const handleChange = (event, value) => {
+    setPage(value); }
+
+    const navigate = useNavigate()
 
     function createData(AssessmentName, AssessmentID, Edit, ViewQuestion, Setting) {
       return { AssessmentName, AssessmentID, Edit, ViewQuestion, Setting };
@@ -62,35 +70,15 @@ useEffect(() => {
     FetchAllAssessment(fetch);
   }, []);
 
-  function PaperComponent(props) {
-    return (
-      <Draggable
-        handle="#draggable-dialog-title"
-        cancel={'[class*="MuiDialogContent-root"]'}
-      >
-        <Paper {...props} />
-      </Draggable>
-    );
-  }
-
-  const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
-  });
 
   const handleClickOpen = (id) => {
-    setOpenEdit(true);
     setUniqueID(id);
-    console.log(uniqueid);
   };
 
   const handleViewAssessment = (assessid) => {
-    setOpenAssessment(true);
     setAssessUniqueID(assessid);
+    navigate('/setting/viewquestion')
   }
-
-  const handleClickOpenAdd = () => {
-    setOpenAdd(true);
-  };
 
   const handleClose = () => {
     setOpenEdit(false);
@@ -150,18 +138,12 @@ setOpenEdit(false);
   }).catch(err => console.log(err));
   }
   
-  const listItems = fetch.map(product =>
-    <div key={product.AssessmentName}>
-      {product.AssessmentName}
-    </div>
-  )
+
     return (
         <>
        <div className="Assessment" onLoad={FetchAllAssessment}>
-       {/* <ul>{listItems}</ul> */}
-  
        <h1>Assessment</h1>
-       <button type="button" className="btn btn-outline-success" onClick={handleClickOpenAdd}>Add Assessment</button>
+       <button type="button" data-bs-toggle="modal" data-bs-target="#AddAssess" className="assessbtn btn btn-outline-success">Add Assessment</button>
        </div>
       <div className="AssessmentTable">
       <TableContainer className="AssessmentTable"component={Paper}>
@@ -171,7 +153,7 @@ setOpenEdit(false);
             <TableCell>Assessment Name</TableCell>
             <TableCell align="left">Assessment ID</TableCell>
             <TableCell align="center">View Question</TableCell>
-            <TableCell align="center" >Edit</TableCell>
+            <TableCell align="center" >Action</TableCell>
             <TableCell align="center">Setting</TableCell>
           </TableRow>
         </TableHead>
@@ -186,28 +168,23 @@ setOpenEdit(false);
               </TableCell>
               <TableCell align="left">{row.UniqueID}</TableCell>
               <TableCell align="center"><button type="button" className="btn btn-outline-success"onClick={() => handleViewAssessment(row.UniqueID)} >View_Question</button></TableCell>
-              <TableCell align="center"><button type="button" className="btn btn-outline-success" variant="outlined" onClick={() => handleClickOpen(row.UniqueID)}>Edit</button></TableCell>
-              <TableCell align="center"><button type="button" className="btn btn-outline-success">Setting</button></TableCell>
+              <TableCell align="center"><button type="button" className="btn btn-outline-success" variant="outlined" data-bs-toggle="modal" data-bs-target="#editAssess" onClick={() => handleClickOpen(row.UniqueID)}>Edit</button></TableCell>
+              <TableCell align="center"><button type="button" className="btn btn-outline-success" onClick={() => navigate('/setting/assessmentsetting')}>Setting</button></TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
     </TableContainer>
-    <Dialog
-        open={openedit}
-        onClose={handleClose}
-        PaperComponent={PaperComponent}
-        aria-labelledby="draggable-dialog-title"
-      >
-        <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
-          Update Assessment
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-           Please enter the new Assessment Name
-          </DialogContentText>
-          <TextField
-            autoFocus
+    <div class="modal fade" id="editAssess" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Update Assessment</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Please enter the Assessment Name</p>
+        <TextField
             margin="dense"
             id="name"
             label="Assessment Name"
@@ -216,87 +193,73 @@ setOpenEdit(false);
             fullWidth
             variant="standard"
           />
-        </DialogContent>
-        <DialogActions>
-        <button type="button" className="btn btn-outline-success" autoFocus onClick={DeleteAssessment}>
-            Delete
-          </button>
-          <button type="button" className="btn btn-outline-success" autoFocus onClick={handleClose}>
-            Cancel
-          </button>
-          <button type="button" className="btn btn-outline-success" onClick={UpdateAssessment}>Update</button>
-        </DialogActions>
-      </Dialog>
-      <Dialog
-        open={openadd}
-        onClose={handleClose}
-        PaperComponent={PaperComponent}
-        aria-labelledby="draggable-dialog-title"
-      >
-        <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
-          Add Assessment
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-           Please enter the new Assessment Name
-          </DialogContentText>
-          <TextField
-            autoFocus
+      </div>
+      <div class="modal-footer">
+      <button type="button" class="btn btn-secondary"  onClick={DeleteAssessment}> Delete</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" onClick={UpdateAssessment}>Update</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade modal-dialog" id="Setting" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Create New Assessment</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Please enter the new Assessment Name</p>
+        <TextField
             margin="dense"
             id="name"
             label="Assessment Name"
             onChange={(event) => setAssessmentName(event.target.value)}
             type="Assessment Name"
             fullWidth
-            // variant="standard"
+            variant="standard"
           />
-        </DialogContent>
-        <DialogActions>
           
-          <button type="button" className="btn btn-outline-success" autoFocus onClick={handleClose}>
-            Cancel
-          </button>
-          <button type="button" className="btn btn-outline-success" onClick={AddAssessment}>Add Assessment</button>
-        </DialogActions>
-      </Dialog>
-      <Dialog
-        fullScreen
-        open={openassessment}
-        onClose={handleClose}
-        TransitionComponent={Transition}
-      >
-        <AppBar sx={{ position: 'relative' }}>
-          <Toolbar>
-            <IconButton
-              edge="start"
-              color="inherit"
-              onClick={handleCloseAssessment}
-              aria-label="close"
-            >
-              <CloseIcon />
-            </IconButton>
-            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-              Sound
-            </Typography>
-            <Button autoFocus color="inherit" onClick={handleCloseAssessment}>
-              save
-            </Button>
-          </Toolbar>
-        </AppBar>
-        <List>
-          <ListItem button>
-            <ListItemText primary="Phone ringtone" secondary="Titania" />
-          </ListItem>
-          <Divider />
-          <ListItem button>
-            <ListItemText
-              primary="Default notification ringtone"
-              secondary="Tethys"
-            />
-          </ListItem>
-        </List>
-      </Dialog>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" onClick={AddAssessment}>Create</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="AddAssess" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Create New Assessment</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Please enter the new Assessment Name</p>
+        <TextField
+            margin="dense"
+            id="name"
+            label="Assessment Name"
+            onChange={(event) => setAssessmentName(event.target.value)}
+            type="Assessment Name"
+            fullWidth
+            variant="standard"
+          />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" onClick={AddAssessment}>Create</button>
+      </div>
+    </div>
+  </div>
+</div>
    </div>
+   <Stack spacing={2}>
+      <Typography>Page: {page}</Typography>
+      <Pagination count={10} page={page} onChange={handleChange} />
+    </Stack>
 </>
     )
 }

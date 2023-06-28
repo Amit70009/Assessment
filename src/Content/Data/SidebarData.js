@@ -6,7 +6,8 @@ UilAnalysis,
 UilChart,
 UilNotes,
 UilUser,
-UilSetting 
+UilSetting,
+UilEnvelope 
 } from "@iconscout/react-unicons";
 
 
@@ -33,6 +34,11 @@ export const sideData = [
         icon: UilAnalysis,
         Heading: "Analytics",
         Navigation: "/analytic"
+    },
+    {
+        icon: UilEnvelope  ,
+        Heading: "Email",
+        Navigation: "/email"
     },
     {
         icon: UilSetting ,
