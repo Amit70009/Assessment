@@ -3,12 +3,16 @@
   height: 10%;
   width: 90%; ;
  margin-left: 5%;*/
- margin-top: 5%;
- 
+ margin-top: 2%;
+ padding-left: 1rem;
+ padding-right: 1rem;
   overflow: hidden; 
   
 }
 
+.assessbtn{
+  height: 7vh !important;
+}
 .Assessment{
     margin-top: 3rem;
     margin-left: 2rem;

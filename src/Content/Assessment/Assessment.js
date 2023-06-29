@@ -21,7 +21,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Draggable from 'react-draggable';
-import { useNavigate, useParams } from "react-router-dom";
+import { json, useNavigate, useParams } from "react-router-dom";
 import Slide from '@mui/material/Slide';
 import ListItem from '@mui/material/ListItem';
 import List from '@mui/material/List';
@@ -77,7 +77,8 @@ useEffect(() => {
 
   const handleViewAssessment = (assessid) => {
     setAssessUniqueID(assessid);
-    navigate('/setting/viewquestion')
+    localStorage.setItem("Assessment ID", assessid)
+    navigate('/setting/viewquestion');
   }
 
   const handleClose = () => {
@@ -143,7 +144,7 @@ setOpenEdit(false);
         <>
        <div className="Assessment" onLoad={FetchAllAssessment}>
        <h1>Assessment</h1>
-       <button type="button" data-bs-toggle="modal" data-bs-target="#AddAssess" className="assessbtn btn btn-outline-success">Add Assessment</button>
+       <button type="button" data-bs-toggle="modal" data-bs-target="#AddAssess" className="assessbtn btn btn-outline-success btn-sm">Add Assessment</button>
        </div>
       <div className="AssessmentTable">
       <TableContainer className="AssessmentTable"component={Paper}>
@@ -167,9 +168,9 @@ setOpenEdit(false);
                 {row.AssessmentName}
               </TableCell>
               <TableCell align="left">{row.UniqueID}</TableCell>
-              <TableCell align="center"><button type="button" className="btn btn-outline-success"onClick={() => handleViewAssessment(row.UniqueID)} >View_Question</button></TableCell>
-              <TableCell align="center"><button type="button" className="btn btn-outline-success" variant="outlined" data-bs-toggle="modal" data-bs-target="#editAssess" onClick={() => handleClickOpen(row.UniqueID)}>Edit</button></TableCell>
-              <TableCell align="center"><button type="button" className="btn btn-outline-success" onClick={() => navigate('/setting/assessmentsetting')}>Setting</button></TableCell>
+              <TableCell align="center"><button type="button" className="btn btn-outline-success btn-sm"onClick={() => handleViewAssessment(row.UniqueID)} >View_Question</button></TableCell>
+              <TableCell align="center"><button type="button" className="btn btn-outline-success btn-sm" variant="outlined" data-bs-toggle="modal" data-bs-target="#editAssess" onClick={() => handleClickOpen(row.UniqueID)}>Edit</button></TableCell>
+              <TableCell align="center"><button type="button" className="btn btn-outline-success btn-sm" onClick={() => navigate('/setting/assessmentsetting')}>Setting</button></TableCell>
             </TableRow>
           ))}
         </TableBody>
