@@ -32,15 +32,28 @@ export default function AssessmentSetting() {
   const [checked, setChecked] = React.useState(false);
   const [personName, setPersonName] = React.useState([]);
   const [question, setQuestion] = React.useState(null);
-  const [option1, setOption1] = React.useState(null);
-  const [option2, setOption2] = React.useState(null);
-  const [option3, setOption3] = React.useState(null);
-  const [option4, setOption4] = React.useState(null);
-  const [option5, setOption5] = React.useState(null);
-  const [option6, setOption6] = React.useState(null);
-  const [answer, setAnswer] = React.useState("Default")
+  const [optionsValue, setOptionsValue] = React.useState(
+ {
+    option1: "",
+    option2: "",
+    option3: "",
+    option4: "",
+    option5: "",
+    option6: ""
+}
+  )
+  // const [option1, setOption1] = React.useState("null");
+  // const [option2, setOption2] = React.useState(null);
+  // const [option3, setOption3] = React.useState(null);
+  // const [option4, setOption4] = React.useState(null);
+  // const [option5, setOption5] = React.useState(null);
+  // const [option6, setOption6] = React.useState(null);
+  const [answer, setAnswer] = React.useState("Default");
   const [number, setNumber] = React.useState(0);
   const [require, setRequire] = React.useState(false);
+  const [selectedValue, setSelectedValue] = React.useState("a");
+  const [qtvalue, setQTValue] = React.useState("Radio");
+  const [answerList, setAnswerList] = React.useState([{ answer: "" }]);
 
   const FetchAllQuestion = async () => {
     const AssessmentData = await axios.get(
@@ -62,11 +75,22 @@ export default function AssessmentSetting() {
   };
   const RequiredChange = (event) => {
     setChecked(event.target.checked);
-   setRequire(event.target.value)
+    setRequire(event.target.value);
     console.log(checked);
   };
   const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
+  const QuestionTypeChange = (event) => {
+    setSelectedValue(event.target.value);
+  };
+
+  const controlProps = (item) => ({
+    checked: selectedValue === item,
+    onChange: QuestionTypeChange,
+    value: item,
+    name: "size-radio-button-demo",
+    inputProps: { "aria-label": item },
+  });
   const QuestionType = [
     {
       value: "Radio",
@@ -83,27 +107,35 @@ export default function AssessmentSetting() {
   ];
 
   const AddQuestionFunc = async () => {
-    const AddQuesCall = await axios.post("https://gray-famous-butterfly.cyclic.app/api/users/addaquestion", {
-      question,
-      option1,
-      option2,
-      option3,
-      option4,
-      option5,
-      option6,
-      require,
-      number,
-      answer,
-      assessid: localStorage.getItem("Assessment ID")
-    },
-      {headers: {
-        "Content-Type": "application/json"
-      }}).then(res => {
-        window.location.reload()
-      }).catch(err => {
-        console.log(err);
+    const AddQuesCall = await axios
+      .post(
+        "https://gray-famous-butterfly.cyclic.app/api/users/addaquestion",
+        {
+          question,
+          option1: optionsValue['option1'],
+          option2: optionsValue['option2'],
+          option3: optionsValue['option3'],
+          option4: optionsValue['option4'],
+          option5: optionsValue['option5'],
+          option6: optionsValue['option6'],
+          require,
+          number,
+          answer,
+          assessid: localStorage.getItem("Assessment ID"),
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((res) => {
+        window.location.reload();
       })
-    }
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   const names = [
     "Oliver Hansen",
     "Van Henry",
@@ -117,6 +149,34 @@ export default function AssessmentSetting() {
     "Kelly Snyder",
   ];
 
+  const AddAnswerHandle = () => {
+    setAnswerList([...answerList, { answer: "" }])
+    
+  }
+
+  const RemoveAnswerHandle = (index) => {
+    const list = [...answerList]
+    list.splice(index, 1);
+    setAnswerList(list)
+  }
+
+  const handleChangeValue = (e, index) => {
+    // const {name, value} = e.target;
+    // const list = [...answerList];
+    // list [index][name] = value;
+    // setAnswerList(list);
+    // console.log(value);
+    // setOption1(value)
+    // console.log(answerList);
+    console.log(e.target.value, index);
+    // const prev = optionsValue({index}) 
+    optionsValue['option'+(index+1)] = e.target.value
+    console.log(optionsValue);
+    setOptionsValue(optionsValue)
+    
+  }
+
+  console.log(answerList);
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
   const MenuProps = {
@@ -280,7 +340,7 @@ export default function AssessmentSetting() {
                 <h1 class="modal-title fs-6" id="staticBackdropLabel">
                   Add Question
                 </h1>
-               
+
                 <button
                   type="button"
                   class="btn-close"
@@ -304,6 +364,7 @@ export default function AssessmentSetting() {
                         id="outlined-select-currency"
                         select
                         size="small"
+                        
                         label="Select"
                         defaultValue="Radio"
                       >
@@ -376,20 +437,28 @@ export default function AssessmentSetting() {
                       size="small"
                       variant="standard"
                     />
+
                     <div className="checkbox">
-                      <Checkbox {...label} />
-                      <TextField
-                        margin="dense"
-                        id="Option"
-                        onChange={(event) => setOption1(event.target.value)}
-                        size="small"
-                        label="Option"
-                        type="option"
-                        variant="standard"
-                      />
-                      <span>
-                        <button className="child">Add option</button>
-                      </span>
+                      {answerList.map((singleanswer, index) => (
+                        <div key={index}>
+                          <div>
+                          <Checkbox {...label} />
+                          <Radio {...controlProps("a")} />
+                          <input name="answer" id="answer" type="text" onChange={(e) => handleChangeValue(e, index)}/>
+                          {answerList.length - 1 === index &&
+                            answerList.length < 6 && (
+                              <span className="child">
+                                <button  onClick={AddAnswerHandle} type="button" className="btn btn-outline-success btn-sm">Add</button>
+                              </span>
+                            )}
+                              {answerList.length > 1 && (
+                                <span className="child">
+                            <button  type="button" className="btn btn-outline-danger btn-sm" onClick={() => RemoveAnswerHandle(index)}>Remove</button>
+                          </span>
+                              )}
+                       </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
@@ -402,7 +471,11 @@ export default function AssessmentSetting() {
                 >
                   Cancel
                 </button>
-                <button type="button" class="btn btn-secondary btn-sm" onClick={AddQuestionFunc}>
+                <button
+                  type="button"
+                  class="btn btn-secondary btn-sm"
+                  onClick={AddQuestionFunc}
+                >
                   {" "}
                   Add Question
                 </button>
