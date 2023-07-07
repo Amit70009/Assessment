@@ -10,14 +10,26 @@
   
 }
 
+.pagenav{
+  padding-top: 1rem !important;
+  padding-left: 40%;
+}
+
 .assessbtn{
   height: 7vh !important;
+  margin-right: 1rem !important;
+  margin-left: auto;
 }
 .Assessment{
     margin-top: 3rem;
     margin-left: 2rem;
     display: flex;
     gap: 20rem;
+}
+
+.Actionbtn{
+  display: flex;
+  gap: 0.5rem;
 }
 
 .posts {

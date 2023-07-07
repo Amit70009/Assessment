@@ -1,9 +1,9 @@
 import React from "react";
-import { Link } from 'react-router-dom';
+import { Link, useLocation  } from 'react-router-dom';
 import "../Sidebar/Sidebar.css"
 import { UilEstate } from "@iconscout/react-unicons"
 import { sideData } from "../Data/SidebarData";
-import { useState } from "react";
+import { useState, useEffect  } from "react";
 import { useNavigate } from "react-router-dom";
 import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
 import HomePage from "../Home/Home";
@@ -12,7 +12,21 @@ import Assessment from "../Assessment/Assessment";
 export default function SidebarMenu( {children}) {
     const [selected, setSelected] = useState(0);
     const navigate = useNavigate();
-
+    const location = useLocation();
+ 
+    const handleMenuClick = (index, navigation) => {
+        setSelected(index);
+        localStorage.setItem("selectedMenuIndex", index.toString());
+        navigate(navigation);
+      };
+      
+      useEffect(() => {
+        const savedIndex = localStorage.getItem("selectedMenuIndex");
+        if (savedIndex !== null) {
+          setSelected(parseInt(savedIndex, 10));
+        }
+      }, []);
+    
     return (
         <div>
             <div className="Sidebar">
@@ -29,7 +43,7 @@ export default function SidebarMenu( {children}) {
                             <div className={selected === index ? "menuitem active" : "menuitem"}
                                 key={index}
                                 onClick={() => setSelected(index)}>
-                                <div onClick={() => navigate(item.Navigation)}>
+                                <div onClick={() => handleMenuClick(index, item.Navigation)}>
                                     <item.icon />
                                     <span>
                                         {item.Heading}

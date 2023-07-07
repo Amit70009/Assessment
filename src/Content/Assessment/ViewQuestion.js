@@ -8,6 +8,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import React from "react";
+import { Switch } from "antd";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -18,12 +19,16 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import Checkbox from "@mui/material/Checkbox";
-import Switch from "@mui/material/Switch";
+// import Switch from "@mui/material/Switch";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
 import ListItemText from "@mui/material/ListItemText";
 import Select from "@mui/material/Select";
 import Assessment from "./Assessment";
+import { Button, Drawer, Space  } from "antd";
+import { toggleButtonGroupClasses } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+
 
 export default function AssessmentSetting() {
   const [fetch, setFetch] = React.useState([]);
@@ -32,28 +37,119 @@ export default function AssessmentSetting() {
   const [checked, setChecked] = React.useState(false);
   const [personName, setPersonName] = React.useState([]);
   const [question, setQuestion] = React.useState(null);
-  const [optionsValue, setOptionsValue] = React.useState(
- {
-    option1: "",
-    option2: "",
-    option3: "",
-    option4: "",
-    option5: "",
-    option6: ""
-}
-  )
-  // const [option1, setOption1] = React.useState("null");
-  // const [option2, setOption2] = React.useState(null);
-  // const [option3, setOption3] = React.useState(null);
-  // const [option4, setOption4] = React.useState(null);
-  // const [option5, setOption5] = React.useState(null);
-  // const [option6, setOption6] = React.useState(null);
+  const [openDrawer, setOpenDrawer] = React.useState(false);
+  const [optionsValue, setOptionsValue] = React.useState({
+    option1: null,
+    option2: null,
+    option3: null,
+    option4: null,
+    option5: null,
+    option6: null,
+  });
   const [answer, setAnswer] = React.useState("Default");
   const [number, setNumber] = React.useState(0);
   const [require, setRequire] = React.useState(false);
   const [selectedValue, setSelectedValue] = React.useState("a");
   const [qtvalue, setQTValue] = React.useState("Radio");
   const [answerList, setAnswerList] = React.useState([{ answer: "" }]);
+  const [dtype, setDType] = useState("radio");
+  const [did, setDID] = useState("flexRadioDefault1");
+  const [fetchquestion, setFetchQuestion] = React.useState([]);
+  const [para, setPara] = React.useState(true);
+  const [isfullscreen, setIsFullScreen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [length, setLength] = useState([])
+  const [questions, setQuestions] = useState([]);
+  const [currentpage, setCurrentPage] = useState(1);
+    const recordsperpage = 6;
+    const lastindex = currentpage * recordsperpage;
+    const firstindex = lastindex - recordsperpage;
+    const records = fetch.slice(firstindex, lastindex);
+    const npages = Math.ceil(fetch.length / recordsperpage)
+  const numbers = [...Array(npages + 1).keys()].slice(1);
+  const [len, setLen] = useState()
+ 
+
+  const navigate1 = useNavigate();
+
+  const toggleFullScreen = () => {
+    if(!document.fullscreenElement){
+      document.documentElement.requestFullscreen().catch(err => {
+        console.log(err);
+      });
+     } else { if(document.exitFullscreen){
+        document.exitFullscreen();
+      }
+    } setIsFullScreen((prevstate) => !prevstate);
+   
+    }
+    const handleButtonClick = () => {
+      if (!isfullscreen) {
+        toggleFullScreen();
+        navigate1('/setting')
+      } else {
+        navigate1('/setting'); // Replace '/destination' with your desired path
+      }
+    };
+  
+    function PrevPage (){
+      if(currentpage !== 1){
+        setCurrentPage(currentpage - 1)
+      }
+    }
+    function ChangeCPage (id){
+      setCurrentPage(id)
+    }
+    function NextPage (){
+      if(currentpage !== npages){
+        setCurrentPage(currentpage + 1)
+      }
+    }
+
+  const onChange = (checked) => {
+    const check = checked;
+    setRequire(check);
+  };
+  const showDrawer = (id) => {
+    
+    setQuesUniqueID(id);
+    setOpenDrawer(true);
+    // console.log(fetchquestion);
+  };
+
+  const onClose = () => {
+    setOpenDrawer(false);
+  };
+  // const FetchAQuestion = async (id) => {
+  //   setIsLoading(true);
+  
+  //   try {
+  //     const response = await axios.get(
+  //       `https://gray-famous-butterfly.cyclic.app/api/users/fetchquestion/${quesuniqueid}`,
+  //       {
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           accept: "application/json",
+  //         },
+  //       }
+  //     );
+  
+  //     const questionData = response.data.data;
+  //       // console.log(typeof(questionData));
+  //       setLen(Object.keys(questionData).length)
+  //       setQuestions(questionData)
+  //       // console.log(typeof(questionData));
+  //   } catch (error) {
+  //     console.log(error);
+  //     setError("Error fetching question");
+  //   }
+  
+  //   setIsLoading(false);
+  // };
+  
+
+  // console.log(fetchquestion);
 
   const FetchAllQuestion = async () => {
     const AssessmentData = await axios.get(
@@ -66,17 +162,58 @@ export default function AssessmentSetting() {
           accept: "application/json",
         },
       }
-    );
+    )
     setFetch(AssessmentData.data.Data);
+    // console.log(AssessmentData.data.Data);
+    
   };
+
+  const FetchAQuestion = async (id) => {
+    const QuestionCheck = await axios.get(
+      `https://gray-famous-butterfly.cyclic.app/api/users/fetchquestion/${quesuniqueid}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          accept: "application/json",
+        },
+      }
+    )
+    // console.log(QuestionCheck.data.data);
+    const questionsArray = QuestionCheck.data.data
+  setQuestions(questionsArray);
+  // console.log(optionsArray);
+  };
+
+  // const check = () => {
+  //   {fetch.map((item) => {
+  //      if ({fetch.UniqueID} === quesuniqueid) {
+  //       console.log("working");
+  //     } else {
+  //       console.log("bakwas");
+  //     }
+  //   })}
+  //   if (fetch.UniqueID === quesuniqueid) {
+  //     console.log("working");
+  //   } else {
+  //     console.log("bakwas");
+  //     console.log(fetch.UniqueID);
+  //     console.log(quesuniqueid);
+  //   }
+  // }
+
+  const tempor = () => {
+    console.log(typeof(questions));
+  }
+
+  
   const handleClickOpen = (id) => {
     setQuesUniqueID(id);
-    console.log(quesuniqueid);
+    // console.log(quesuniqueid);
   };
   const RequiredChange = (event) => {
     setChecked(event.target.checked);
     setRequire(event.target.value);
-    console.log(checked);
+    // console.log(require);
   };
   const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
@@ -84,26 +221,20 @@ export default function AssessmentSetting() {
     setSelectedValue(event.target.value);
   };
 
-  const controlProps = (item) => ({
-    checked: selectedValue === item,
-    onChange: QuestionTypeChange,
-    value: item,
-    name: "size-radio-button-demo",
-    inputProps: { "aria-label": item },
-  });
   const QuestionType = [
     {
-      value: "Radio",
+      value: "radio",
       name: "Radio",
     },
     {
-      value: "Paragraph",
-      name: "Paragraph",
-    },
-    {
-      value: "Checkbox",
+      value: "checkbox",
       name: "Checkbox",
     },
+    {
+      value: "paragraph",
+      name: "Paragraph",
+    },
+    
   ];
 
   const AddQuestionFunc = async () => {
@@ -112,14 +243,14 @@ export default function AssessmentSetting() {
         "https://gray-famous-butterfly.cyclic.app/api/users/addaquestion",
         {
           question,
-          option1: optionsValue['option1'],
-          option2: optionsValue['option2'],
-          option3: optionsValue['option3'],
-          option4: optionsValue['option4'],
-          option5: optionsValue['option5'],
-          option6: optionsValue['option6'],
-          require,
+          option1: optionsValue["option1"],
+          option2: optionsValue["option2"],
+          option3: optionsValue["option3"],
+          option4: optionsValue["option4"],
+          option5: optionsValue["option5"],
+          option6: optionsValue["option6"],
           number,
+          require,
           answer,
           assessid: localStorage.getItem("Assessment ID"),
         },
@@ -137,46 +268,28 @@ export default function AssessmentSetting() {
       });
   };
   const names = [
-    "Oliver Hansen",
-    "Van Henry",
-    "April Tucker",
-    "Ralph Hubbard",
-    "Omar Alexander",
-    "Carlos Abbott",
-    "Miriam Wagner",
-    "Bradley Wilkerson",
-    "Virginia Andrews",
-    "Kelly Snyder",
+    optionsValue["option1"],
+    optionsValue["option2"],
+    optionsValue["option3"],
+    optionsValue["option4"],
+    optionsValue["option5"],
+    optionsValue["option6"],
   ];
 
   const AddAnswerHandle = () => {
-    setAnswerList([...answerList, { answer: "" }])
-    
-  }
+    setAnswerList([...answerList, { answer: "" }]);
+  };
 
   const RemoveAnswerHandle = (index) => {
-    const list = [...answerList]
+    const list = [...answerList];
     list.splice(index, 1);
-    setAnswerList(list)
-  }
+    setAnswerList(list);
+  };
 
   const handleChangeValue = (e, index) => {
-    // const {name, value} = e.target;
-    // const list = [...answerList];
-    // list [index][name] = value;
-    // setAnswerList(list);
-    // console.log(value);
-    // setOption1(value)
-    // console.log(answerList);
-    console.log(e.target.value, index);
-    // const prev = optionsValue({index}) 
-    optionsValue['option'+(index+1)] = e.target.value
-    console.log(optionsValue);
-    setOptionsValue(optionsValue)
-    
-  }
-
-  console.log(answerList);
+    optionsValue["option" + (index + 1)] = e.target.value;
+    setOptionsValue(optionsValue);
+  };
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
   const MenuProps = {
@@ -191,10 +304,31 @@ export default function AssessmentSetting() {
     const {
       target: { value },
     } = event;
-    setPersonName(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
-    );
+    setPersonName(typeof value === "string" ? value.split(",") : value);
+    const ans = personName;
+    setAnswer(ans);
+  };
+
+  const handledropdown = (e) => {
+    const getvalue = e.target.value;
+    if (getvalue == "checkbox") {
+      const showType = "checkbox";
+      const showID = "flexCheckDefault";
+      setDType(showType);
+      setDID(showID);
+      setPara(true);
+  
+    } else if (getvalue == "radio") {
+      const showType = "radio";
+      const showID = "flexRadioDefault";
+      setDType(showType);
+      setDID(showID);
+      setPara(true);
+    
+    } else if(getvalue == "paragraph") {
+      setPara(false);
+
+    };
   };
 
   const DeleteQuestion = async (id) => {
@@ -209,7 +343,7 @@ export default function AssessmentSetting() {
         }
       )
       .then((res) => {
-        console.log(quesuniqueid);
+        // console.log(quesuniqueid);
         window.location.reload();
       })
       .catch((err) => {
@@ -218,24 +352,40 @@ export default function AssessmentSetting() {
     setOpenEdit(false);
   };
 
+  // const renderedData = [];
+  // questions.forEach((item, index) => {
+  //   renderedData.push(<div key={index}>{item}</div>)
+  // })
+
   useEffect(() => {
     FetchAllQuestion();
   }, []);
 
+  useEffect(() => {
+    if (openDrawer) {
+      FetchAQuestion()
+    }
+  }, [openDrawer]);
+
+
   return (
-    <>
+    <><div className="AssessQues">
+    <h3> Assessment Question</h3>
+    <button className="AssessQuesbtn btn btn-outline-success btn-sm" data-bs-toggle="modal" data-bs-target="#AddQuestion">
+          Add Question
+        </button></div>
       <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item">
+        <ol className="bread breadcrumb">
+          <li className="breadcrumb-item">
             <a href="/assessment">Assessment</a>
           </li>
-          <li class="breadcrumb-item active" aria-current="page">
+          <li className=" breadcrumb-item active" aria-current="page">
             Assessment Question
           </li>
+        
         </ol>
-        <button data-bs-toggle="modal" data-bs-target="#AddQuestion">
-          Create Question
-        </button>
+
+
         <TableContainer className="AssessmentTable" component={Paper}>
           <Table sx={{ minWidth: 500 }} size="small" aria-label="a dense table">
             <TableHead>
@@ -246,75 +396,149 @@ export default function AssessmentSetting() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {fetch.map((row) => (
-                <TableRow
-                  key={row.UniqueID}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    <p>1</p>
-                  </TableCell>
+              {records.map((row, index) => (
+                <>
+                  <TableRow
+                    key={row.UniqueID}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell component="th" scope="row">
+                      <p>{index + 1 + (currentpage - 1) * recordsperpage}</p>
+                    </TableCell>
 
-                  <TableCell align="left"> {row.question}</TableCell>
-                  <TableCell align="center" className="main">
-                    <button
-                      type="button"
-                      className="btn btn-outline-success btn-sm"
-                      variant="outlined"
-                    >
-                      View
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-outline-success btn-sm"
-                      data-bs-toggle="modal"
-                      data-bs-target="#DeleteQuestion"
-                      onClick={() => handleClickOpen(row.UniqueID)}
-                    >
-                      Delete
-                    </button>
-                  </TableCell>
-                </TableRow>
+                    <TableCell align="left"> {row.question}</TableCell>
+                    <TableCell align="center" className="main">
+                      <button
+                        type="button"
+                        className="btn btn-outline-info btn-sm"
+                        variant="outlined"
+                        onClick={() => showDrawer(row.UniqueID)}
+                      >
+                        View
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-outline-danger btn-sm"
+                        data-bs-toggle="modal"
+                        data-bs-target="#DeleteQuestion"
+                        onClick={() => handleClickOpen(row.UniqueID)}
+                      >
+                        Delete
+                      </button>
+                    </TableCell>
+                  </TableRow>
+                  
+                  <Drawer
+                    title="View Question"
+                    placement="right"
+                    onClose={onClose}
+                    width={500}
+                    open={openDrawer}
+                    extra={
+                      <Space>
+                        <Button onClick={onClose}>Cancel</Button>
+                        <Button type="primary" onClick={onClose}>
+                          Update
+                        </Button>
+                      </Space>
+                    }
+                  >
+                    {/* <button onClick={handleButtonClick}> {isfullscreen ? 'Exit Full Screen' : "Go Full Screen"} </button> */}
+                   {/* <div>
+                    {questions.map((item) => (
+                     
+                      <div key={item.id}>
+                      {item.question}
+                      </div> */}
+                     
+                    {/* ))} */}
+
+                    {/* {renderedData} */}
+                    
+                    {/* {len > 0 ? (questions.map((item) => (
+                      <>
+                      <div key={item.UniqueID}>
+                      <h3> {item.question}</h3>
+                      <h1>{item.option1}</h1>
+                      </div>
+                      </>
+                    ))) : (<p>Error found</p>)} */}
+                   {/* {isLoading && <p>Loading questions...</p>}
+      {error && <p>Error: {error}</p>}
+      {Array.isArray(questions) && questions.length > 0 ? (
+        questions.map((question) => (
+          <div key={question.question}>
+            <h3>{question.option1}</h3>
+            <p>{question.option2}</p> */}
+            {/* Render other question details as needed */}
+          {/* </div>
+          {questions.map((question) => (
+        <div key={question.id}>
+          <p>{question.question}</p>
+          <button onClick={() => showDrawer(question.id)}>Select</button>
+          {quesuniqueid === question.id && (
+            <p>This question is selected.</p>
+          )}
+        </div>
+      ))} */}
+             
+                  </Drawer>
+                </>
               ))}
             </TableBody>
           </Table>
         </TableContainer>
+        <nav className="pagenav">
+        <ul className="pagination">
+          <li className="page-item">
+            <a href="#" className="page-link" onClick={PrevPage}>Prev</a>
+          </li>
+{numbers.map((n, i) => (
+  <li className={`page-item${currentpage === n ? 'active' : ''}`} key={i}>
+<a href="#" className="page-link" onClick={() => ChangeCPage(n)}>{n}</a>
+  </li>
+))}
+          <li className="page-item">
+            <a href="#" className="page-link" onClick={NextPage}>Next</a>
+          </li>
+        </ul>
+      </nav>
         <div
-          class="modal fade"
+          className="modal fade"
           id="DeleteQuestion"
           data-bs-backdrop="static"
           data-bs-keyboard="false"
-          tabindex="-1"
+          tabIndex="-1"
           aria-labelledby="staticBackdropLabel"
           aria-hidden="true"
         >
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel">
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h1 className="modal-title fs-5" id="staticBackdropLabel">
                   Delete Question
                 </h1>
                 <button
                   type="button"
-                  class="btn-close"
+                  className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
                 ></button>
               </div>
-              <div class="modal-body">
+              <div className="modal-body">
                 <p>Are you sure, you want to delete the question?</p>
               </div>
-              <div class="modal-footer">
+              <div className="modal-footer">
                 <button
                   type="button"
-                  class="btn btn-secondary"
+                  className="btn btn-secondary"
                   data-bs-dismiss="modal"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
-                  class="btn btn-secondary"
+                  className="btn btn-secondary"
                   onClick={DeleteQuestion}
                 >
                   {" "}
@@ -326,31 +550,31 @@ export default function AssessmentSetting() {
         </div>
 
         <div
-          class="modal fade modal-dialog-scrollable modal-xl"
+          className="modal fade modal-dialog-scrollable modal-xl"
           id="AddQuestion"
           data-bs-backdrop="static"
           data-bs-keyboard="false"
-          tabindex="-1"
+          tabIndex="-1"
           aria-labelledby="staticBackdropLabel"
           aria-hidden="true"
         >
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h1 class="modal-title fs-6" id="staticBackdropLabel">
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h1 className="modal-title fs-6" id="staticBackdropLabel">
                   Add Question
                 </h1>
 
                 <button
                   type="button"
-                  class="btn-close"
+                  className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
                 ></button>
               </div>
               <div className="modal-body">
-                <div class="row">
-                  <div class="col-8 col-sm-4">
+                <div className="row">
+                  <div className="col-8 col-sm-4">
                     <Box
                       component="form"
                       sx={{
@@ -364,9 +588,9 @@ export default function AssessmentSetting() {
                         id="outlined-select-currency"
                         select
                         size="small"
-                        
+                        onChange={(e) => handledropdown(e)}
                         label="Select"
-                        defaultValue="Radio"
+                        defaultValue="radio"
                       >
                         {QuestionType.map((option) => (
                           <MenuItem key={option.value} value={option.value}>
@@ -383,18 +607,14 @@ export default function AssessmentSetting() {
                         type="number"
                         onChange={(event) => setNumber(event.target.value)}
                         variant="standard"
+                        defaultValue={0}
                         InputLabelProps={{
                           shrink: true,
                         }}
                       />
                     </div>
                     <div className="checkbox checkbox-number">
-                      <p>Required</p>{" "}
-                      <Switch
-                        checked={checked}
-                        onChange={RequiredChange}
-                        inputProps={{ "aria-label": "controlled" }}
-                      />
+                      <p>Required</p> <Switch onChange={onChange} />
                     </div>
                     <div>
                       <div className="checkbox-number">
@@ -408,7 +628,7 @@ export default function AssessmentSetting() {
                             id="demo-multiple-checkbox"
                             multiple
                             value={personName}
-                            onChange={handleChange}
+                            onChange={(e) => handleChange(e)}
                             input={<OutlinedInput label="Answer" />}
                             renderValue={(selected) => selected.join(", ")}
                             MenuProps={MenuProps}
@@ -426,7 +646,7 @@ export default function AssessmentSetting() {
                       </div>
                     </div>
                   </div>
-                  <div class="Top-modal col-4 col-sm-8">
+                  <div className="Top-modal col-4 col-sm-8">
                     <TextField
                       margin="dense"
                       id="Question"
@@ -441,39 +661,76 @@ export default function AssessmentSetting() {
                     <div className="checkbox">
                       {answerList.map((singleanswer, index) => (
                         <div key={index}>
-                          <div>
-                          <Checkbox {...label} />
-                          <Radio {...controlProps("a")} />
-                          <input name="answer" id="answer" type="text" onChange={(e) => handleChangeValue(e, index)}/>
-                          {answerList.length - 1 === index &&
-                            answerList.length < 6 && (
-                              <span className="child">
-                                <button  onClick={AddAnswerHandle} type="button" className="btn btn-outline-success btn-sm">Add</button>
-                              </span>
-                            )}
+                          <div className="Option">
+                            { para ?
+                            <div className="form-check">
+                              <input
+                                className="form-check-input"
+                                type={dtype}
+                               
+                                name="flexRadioDefault"
+                                id={did}
+                              />
+                              <TextField
+                                name="answer"
+                                id="answer"
+                                size="small"
+                             
+                                label={"Option " + (index + 1)}
+                                type="text"
+                                onChange={(e) => handleChangeValue(e, index)}
+                              />
+                              {answerList.length - 1 === index &&
+                                answerList.length < 6 && (
+                                  <span className="child">
+                                    <button
+                                      onClick={AddAnswerHandle}
+                                      type="button"
+                                      className="btn btn-outline-success btn-sm"
+                                    >
+                                      Add
+                                    </button>
+                                  </span>
+                                )}
                               {answerList.length > 1 && (
                                 <span className="child">
-                            <button  type="button" className="btn btn-outline-danger btn-sm" onClick={() => RemoveAnswerHandle(index)}>Remove</button>
-                          </span>
+                                  <button
+                                    type="button"
+                                    className="btn btn-outline-danger btn-sm"
+                                    onClick={() => RemoveAnswerHandle(index)}
+                                  >
+                                    Remove
+                                  </button>
+                                </span>
                               )}
-                       </div>
+                            </div> : <TextField
+            margin="dense"
+            id="name"
+            label="Answer"
+            onChange={(event) => setAnswer(event.target.value)}
+            type="Assessment Name"
+            fullWidth
+            variant="standard"
+          />
+}
+                          </div>
                         </div>
                       ))}
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="modal-footer">
+              <div className="modal-footer">
                 <button
                   type="button"
-                  class="btn btn-secondary btn-sm"
+                  className="btn btn-secondary btn-sm"
                   data-bs-dismiss="modal"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
-                  class="btn btn-secondary btn-sm"
+                  className="btn btn-secondary btn-sm"
                   onClick={AddQuestionFunc}
                 >
                   {" "}

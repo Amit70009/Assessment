@@ -18,6 +18,10 @@
     justify-content: end;
 }
 
+.Option{
+    margin-top: 0.8rem !important;
+}
+
 .Required{
     align-items: left;
     justify-content: center;
@@ -58,4 +62,29 @@
 
 .child{
     margin-left: 1rem !important;
+}
+.fullscreen{
+    background-color: white;
+}
+
+.AssessQues{
+    display: flex;
+    margin-top: 3rem;
+    margin-left: 2rem;
+}
+
+.AssessQuesbtn{
+    /* float: right; */
+    margin-right: 1rem !important;
+    margin-left: auto;
+}
+
+.bread{
+    margin-left: 2rem;
+}
+
+.box{
+    background: radial-gradient(circle, blue, red );
+    border: solid;
+    font-size: 5vw;
 }
