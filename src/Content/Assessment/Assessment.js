@@ -100,6 +100,7 @@ export default function Assessment() {
       }
     );
     setFetch(AssessmentData.data.data.AssessmentCheck);
+    // console.log(AssessmentData.data.data.AssessmentCheck);
     setIsLoading(false);
   };
 

@@ -96,7 +96,7 @@ console.log(profile);
         
  <div className="Setting" onLoad={ProfileCallOnClick}>
     <h3>Setting</h3>
-    <button onClick={() => {localStorage.removeItem("user-details")
+    <button onClick={() => {localStorage.clear()
       Navigation('/login')}}>Logout</button>
         <div className="MyProfile">
             <div className="Details">

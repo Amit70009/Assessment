@@ -28,6 +28,7 @@ import Assessment from "./Assessment";
 import { Button, Drawer, Space  } from "antd";
 import { toggleButtonGroupClasses } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { UilEdit } from '@iconscout/react-unicons'
 
 
 export default function AssessmentSetting() {
@@ -36,7 +37,7 @@ export default function AssessmentSetting() {
   const [openedit, setOpenEdit] = React.useState(false);
   const [checked, setChecked] = React.useState(false);
   const [personName, setPersonName] = React.useState([]);
-  const [question, setQuestion] = React.useState(null);
+  const [question, setQuestion] = React.useState("");
   const [openDrawer, setOpenDrawer] = React.useState(false);
   const [optionsValue, setOptionsValue] = React.useState({
     option1: null,
@@ -61,6 +62,7 @@ export default function AssessmentSetting() {
   const [error, setError] = useState(null);
   const [length, setLength] = useState([])
   const [questions, setQuestions] = useState([]);
+  const [editid, setEditID] = useState();
   const [currentpage, setCurrentPage] = useState(1);
     const recordsperpage = 6;
     const lastindex = currentpage * recordsperpage;
@@ -69,6 +71,7 @@ export default function AssessmentSetting() {
     const npages = Math.ceil(fetch.length / recordsperpage)
   const numbers = [...Array(npages + 1).keys()].slice(1);
   const [len, setLen] = useState()
+ 
  
 
   const navigate1 = useNavigate();
@@ -121,35 +124,6 @@ export default function AssessmentSetting() {
   const onClose = () => {
     setOpenDrawer(false);
   };
-  // const FetchAQuestion = async (id) => {
-  //   setIsLoading(true);
-  
-  //   try {
-  //     const response = await axios.get(
-  //       `https://gray-famous-butterfly.cyclic.app/api/users/fetchquestion/${quesuniqueid}`,
-  //       {
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           accept: "application/json",
-  //         },
-  //       }
-  //     );
-  
-  //     const questionData = response.data.data;
-  //       // console.log(typeof(questionData));
-  //       setLen(Object.keys(questionData).length)
-  //       setQuestions(questionData)
-  //       // console.log(typeof(questionData));
-  //   } catch (error) {
-  //     console.log(error);
-  //     setError("Error fetching question");
-  //   }
-  
-  //   setIsLoading(false);
-  // };
-  
-
-  // console.log(fetchquestion);
 
   const FetchAllQuestion = async () => {
     const AssessmentData = await axios.get(
@@ -164,11 +138,13 @@ export default function AssessmentSetting() {
       }
     )
     setFetch(AssessmentData.data.Data);
-    // console.log(AssessmentData.data.Data);
+
     
   };
 
   const FetchAQuestion = async (id) => {
+
+   
     const QuestionCheck = await axios.get(
       `https://gray-famous-butterfly.cyclic.app/api/users/fetchquestion/${quesuniqueid}`,
       {
@@ -178,34 +154,52 @@ export default function AssessmentSetting() {
         },
       }
     )
-    // console.log(QuestionCheck.data.data);
+    
     const questionsArray = QuestionCheck.data.data
-  setQuestions(questionsArray);
-  // console.log(optionsArray);
-  };
-
-  // const check = () => {
-  //   {fetch.map((item) => {
-  //      if ({fetch.UniqueID} === quesuniqueid) {
-  //       console.log("working");
-  //     } else {
-  //       console.log("bakwas");
-  //     }
-  //   })}
-  //   if (fetch.UniqueID === quesuniqueid) {
-  //     console.log("working");
-  //   } else {
-  //     console.log("bakwas");
-  //     console.log(fetch.UniqueID);
-  //     console.log(quesuniqueid);
-  //   }
-  // }
-
-  const tempor = () => {
-    console.log(typeof(questions));
-  }
+    const questiondata = [questionsArray]
+    const existingdata = questiondata[0].question
+  setQuestions(questiondata);
+  setQuestion(existingdata)
 
   
+  
+  };
+  const UpdateQuestion = async (id) => {
+    const updatedOptions = {};
+    for (const [key, value] of Object.entries(optionsValue)) {
+      if (value !== null && value !== "") {
+        updatedOptions[key] = value;
+      }
+    }
+
+
+    const updatedQuestion = {
+      question,
+      ...updatedOptions,
+      number,
+      require,
+      answer,
+    };
+
+  const QuestionUpdate = await axios.put(
+    `https://gray-famous-butterfly.cyclic.app/api/users/updatequestion/${quesuniqueid}`,
+      updatedQuestion,
+    {
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+    }
+  ).then((res) => {
+    window.location.reload();
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+
+
+
+};
   const handleClickOpen = (id) => {
     setQuesUniqueID(id);
     // console.log(quesuniqueid);
@@ -243,12 +237,7 @@ export default function AssessmentSetting() {
         "https://gray-famous-butterfly.cyclic.app/api/users/addaquestion",
         {
           question,
-          option1: optionsValue["option1"],
-          option2: optionsValue["option2"],
-          option3: optionsValue["option3"],
-          option4: optionsValue["option4"],
-          option5: optionsValue["option5"],
-          option6: optionsValue["option6"],
+         ...optionsValue,
           number,
           require,
           answer,
@@ -331,6 +320,7 @@ export default function AssessmentSetting() {
     };
   };
 
+
   const DeleteQuestion = async (id) => {
     const AssessmentData = await axios
       .delete(
@@ -343,7 +333,7 @@ export default function AssessmentSetting() {
         }
       )
       .then((res) => {
-        // console.log(quesuniqueid);
+      
         window.location.reload();
       })
       .catch((err) => {
@@ -352,10 +342,20 @@ export default function AssessmentSetting() {
     setOpenEdit(false);
   };
 
-  // const renderedData = [];
-  // questions.forEach((item, index) => {
-  //   renderedData.push(<div key={index}>{item}</div>)
-  // })
+  
+  const handleEditQuestion = (id) => {
+    setEditID(id)
+    console.log(id);
+  }
+
+  const handleUpdateQuestion = (id) => {
+    window.location.reload()
+    setEditID(-1)
+  }
+  
+  const checktime = (questions) => {
+    console.log(questions.id);
+  }
 
   useEffect(() => {
     FetchAllQuestion();
@@ -396,6 +396,7 @@ export default function AssessmentSetting() {
               </TableRow>
             </TableHead>
             <TableBody>
+              
               {records.map((row, index) => (
                 <>
                   <TableRow
@@ -427,64 +428,94 @@ export default function AssessmentSetting() {
                       </button>
                     </TableCell>
                   </TableRow>
-                  
-                  <Drawer
-                    title="View Question"
-                    placement="right"
-                    onClose={onClose}
-                    width={500}
-                    open={openDrawer}
-                    extra={
-                      <Space>
-                        <Button onClick={onClose}>Cancel</Button>
-                        <Button type="primary" onClick={onClose}>
-                          Update
-                        </Button>
-                      </Space>
-                    }
-                  >
-                    {/* <button onClick={handleButtonClick}> {isfullscreen ? 'Exit Full Screen' : "Go Full Screen"} </button> */}
-                   {/* <div>
-                    {questions.map((item) => (
-                     
-                      <div key={item.id}>
-                      {item.question}
-                      </div> */}
-                     
-                    {/* ))} */}
-
-                    {/* {renderedData} */}
-                    
-                    {/* {len > 0 ? (questions.map((item) => (
-                      <>
-                      <div key={item.UniqueID}>
-                      <h3> {item.question}</h3>
-                      <h1>{item.option1}</h1>
-                      </div>
-                      </>
-                    ))) : (<p>Error found</p>)} */}
-                   {/* {isLoading && <p>Loading questions...</p>}
-      {error && <p>Error: {error}</p>}
-      {Array.isArray(questions) && questions.length > 0 ? (
-        questions.map((question) => (
-          <div key={question.question}>
-            <h3>{question.option1}</h3>
-            <p>{question.option2}</p> */}
-            {/* Render other question details as needed */}
-          {/* </div>
-          {questions.map((question) => (
-        <div key={question.id}>
-          <p>{question.question}</p>
-          <button onClick={() => showDrawer(question.id)}>Select</button>
-          {quesuniqueid === question.id && (
-            <p>This question is selected.</p>
-          )}
-        </div>
-      ))} */}
-             
-                  </Drawer>
-                </>
+                  </>
               ))}
+                  {questions.map((item, index) => (
+                    item.id === editid ? (
+  <div key={item.id}>
+    <Drawer
+      title="View Question"
+      placement="right"
+      onClose={onClose}
+      width={600}
+      open={openDrawer}
+      
+      extra={
+        <Space>
+          <Button onClick={onClose}>Cancel</Button>
+          <Button type="primary" onClick={() => handleEditQuestion(item.assessid)}>
+            Edit
+          </Button>
+        </Space>
+      }
+    >
+      <div>
+        
+        <h6>Question: {item.question}</h6>
+        {Array.from({ length: 6 }, (_, i) => i + 1).map(optionNumber => (
+  item['option' + optionNumber] && (
+    <div key={optionNumber}>
+      Option {optionNumber}: {item['option'+ optionNumber]}
+      
+    </div>
+  )
+))}
+        <p>Answer: {item.answer}</p>
+        <p>Number: {item.number}</p>
+        <p>Required: {item.require ? "Yes" : "No"}</p>
+      </div>
+    </Drawer>
+  </div>
+): <div key={item.id}>
+<Drawer
+  title="View Question"
+  placement="right"
+  onClose={onClose}
+  width={600}
+  open={openDrawer}
+  
+  extra={
+    <Space>
+   
+      <Button type="primary" onClick={UpdateQuestion}>
+        Update
+      </Button>
+    </Space>
+  }
+>
+  <div>
+   
+    <input type="text" defaultValue={question} onChange={(e) => {
+     
+     const updatedValue = e.target.value;
+    console.log(updatedValue);
+    setQuestion(updatedValue);
+          }} />
+    {Array.from({ length: 6 }, (_, i) => i + 1).map(optionNumber => (
+      
+(
+    <div key={optionNumber}>
+      Option {optionNumber}:
+      <input
+        type="text"
+        defaultValue={item['option' + optionNumber]}
+        onChange={(e) => {setOptionsValue({ ...optionsValue, ['option' + optionNumber]: e.target.value })} }
+      />
+      
+    </div>
+  )
+))}
+{/* <button onClick={addOption}>Add Option</button> */}
+    <p>Answer: {item.answer}</p>
+    <p>Number: {item.number}</p>
+    <p>Required: {item.require ? "Yes" : "No"}</p>
+  </div>
+</Drawer>
+</div>))}
+
+             
+                 
+               
             </TableBody>
           </Table>
         </TableContainer>
@@ -743,4 +774,4 @@ export default function AssessmentSetting() {
       </nav>
     </>
   );
-}
+  }
