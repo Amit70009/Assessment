@@ -57,7 +57,7 @@ const [newData, setNewData] = useState();
       headers: {
         accept: "application/json",
         "api-key":
-          "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",
+          "",
         "content-type": "application/json",
       },
       data: data,
