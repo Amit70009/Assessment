@@ -1,0 +1,24 @@
+.EmailSetting{
+    margin-top: 3rem;
+    margin-left: 2rem;
+    display: flex;
+    gap: 20rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.Email{
+    margin-right: 1rem !important;
+    margin-left: auto !important;
+  }
+  .sendemail-modal{
+    display: flex;
+  }
+
+  .input{
+    width: 200% !important;
+  }
+
+  .SNo.table{
+    width: 3rem;
+  }

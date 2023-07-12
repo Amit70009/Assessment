@@ -17,11 +17,17 @@
     align-items: right;
     justify-content: end;
 }
-
+.Drawer{
+    margin-top: 0.5rem !important;
+}
 .Option{
     margin-top: 0.8rem !important;
 }
 
+.inline{
+    display: flex;
+    gap: 1rem;
+}
 .Required{
     align-items: left;
     justify-content: center;

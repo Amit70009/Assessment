@@ -123,6 +123,7 @@ export default function AssessmentSetting() {
 
   const onClose = () => {
     setOpenDrawer(false);
+    window.location.reload()
   };
 
   const FetchAllQuestion = async () => {
@@ -404,7 +405,7 @@ export default function AssessmentSetting() {
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
                     <TableCell component="th" scope="row">
-                      <p>{index + 1 + (currentpage - 1) * recordsperpage}</p>
+                      <p>{index + 1}</p>
                     </TableCell>
 
                     <TableCell align="left"> {row.question}</TableCell>
@@ -466,7 +467,7 @@ export default function AssessmentSetting() {
       </div>
     </Drawer>
   </div>
-): <div key={item.id}>
+): <div key={item.id} className="Drawer">
 <Drawer
   title="View Question"
   placement="right"
@@ -483,32 +484,66 @@ export default function AssessmentSetting() {
     </Space>
   }
 >
-  <div>
-   
-    <input type="text" defaultValue={question} onChange={(e) => {
+  <div className="form-group row ">
+  <label for="colFormLabel" class="col-sm-2 col-form-label">Question : </label>
+  <div class="col-sm-10">
+    <input type="text" className="form-control" id="colFormLabel" defaultValue={question} onChange={(e) => {
      
      const updatedValue = e.target.value;
     console.log(updatedValue);
     setQuestion(updatedValue);
-          }} />
+          }} /> </div>
     {Array.from({ length: 6 }, (_, i) => i + 1).map(optionNumber => (
       
 (
-    <div key={optionNumber}>
-      Option {optionNumber}:
+    <div key={optionNumber} className="form-group row " >
+     
+      <label for="colFormLabel" class="col-sm-2 col-form-label Drawer"> Option {optionNumber} :</label>
+      <div class="col-sm-10">
       <input
         type="text"
+        className="form-control Drawer"
+        id="colFormLabel"
         defaultValue={item['option' + optionNumber]}
         onChange={(e) => {setOptionsValue({ ...optionsValue, ['option' + optionNumber]: e.target.value })} }
       />
-      
-    </div>
+      </div>
+      </div>
   )
 ))}
 {/* <button onClick={addOption}>Add Option</button> */}
     <p>Answer: {item.answer}</p>
-    <p>Number: {item.number}</p>
-    <p>Required: {item.require ? "Yes" : "No"}</p>
+    <Select
+                            labelId="demo-multiple-checkbox-label"
+                            id="demo-multiple-checkbox"
+                            multiple
+                            value={personName}
+                            onChange={(e) => handleChange(e)}
+                            input={<OutlinedInput label="Answer" />}
+                            renderValue={(selected) => selected.join(", ")}
+                            MenuProps={MenuProps}
+                          >
+                            {questions.map((name) => (
+                              <MenuItem key={name.id} value={name.optionNumber}>
+                                <Checkbox
+                                  checked={personName.indexOf(name.optionNumber) > -1}
+                                />
+                                <ListItemText primary={name.optionNumber} />
+                              </MenuItem>
+                            ))}
+                          </Select>
+    <p className="inline">Number: <TextField
+                        className="NumberField"
+                        id="outlined-number"
+                        type="number"
+                        onChange={(event) => setNumber(event.target.value)}
+                        variant="standard"
+                        defaultValue={item.number}
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                      /> </p>
+    <p>Required: {item.require ? "Yes" : "No"} <Switch onChange={onChange} /></p>
   </div>
 </Drawer>
 </div>))}
@@ -706,7 +741,6 @@ export default function AssessmentSetting() {
                                 name="answer"
                                 id="answer"
                                 size="small"
-                             
                                 label={"Option " + (index + 1)}
                                 type="text"
                                 onChange={(e) => handleChangeValue(e, index)}
