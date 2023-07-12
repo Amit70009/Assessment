@@ -11,7 +11,7 @@ import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
 import AssessSetting from "./Assessment/AssessSetting";
 import ViewQuestion from "./Assessment/ViewQuestion";
 import EmailPage from "./Email/Email"
-
+import EmailSetting from "./Email/EmailSetting"
 
 
 export default function DashBoard() {
@@ -31,6 +31,7 @@ export default function DashBoard() {
 <Route  path='/setting' element={<SettingPage />}></Route>
 <Route  path='/setting/assessmentsetting' element={<AssessSetting />}></Route>
 <Route  path='/setting/viewquestion' element={<ViewQuestion />}></Route>
+<Route  path='/email/emailsetting' element={<EmailSetting />}></Route>
 </Routes>
 </div>
 <div>

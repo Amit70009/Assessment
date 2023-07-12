@@ -57,7 +57,7 @@ const [newData, setNewData] = useState();
       headers: {
         accept: "application/json",
         "api-key":
-          "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",
+          "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",
         "content-type": "application/json",
       },
       data: data,
@@ -66,6 +66,7 @@ const [newData, setNewData] = useState();
     axios
       .request(config)
       .then((response) => {
+        window.location.reload()
       })
       .catch((error) => {
         console.log(error);
@@ -171,7 +172,6 @@ const [newData, setNewData] = useState();
 
           
             {updatedData.map((web, index) => (
-setIsLoading(true),
 
               <TableRow key={web.email} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                 <TableCell component="th" scope="row">
@@ -192,7 +192,7 @@ setIsLoading(true),
       <div className='EmailSetting'>
       <Space> <Button icon={<SendOutlined />} type="primary" data-bs-toggle="modal" data-bs-target="#sendemail"> Send Email</Button> </Space>
         
-        <a href='#' className='Email'>Email Setting</a>
+        <a href='/email/emailsetting' className='Email'>Email Setting</a>
       </div>
       <div className="AssessmentTable">
       <YourComponent fetchwebhook={fetchwebhook} />
