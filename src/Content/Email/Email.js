@@ -56,8 +56,7 @@ const [newData, setNewData] = useState();
       url: "https://api.brevo.com/v3/smtp/email",
       headers: {
         accept: "application/json",
-        "api-key":
-          "",
+        "api-key":process.env.REACT_APP_API_KEY,
         "content-type": "application/json",
       },
       data: data,
