@@ -30,6 +30,8 @@ const [senderEmail, setSenderEmail] = useState("");
 const [emailSubject, setEmailSubject] = useState("")
 const [reqid, setReqID] = useState("req_vaBPviZnIxrdS7OI1R79")
 const [fetchwebhook, setFetchWebhook] = useState()
+const [newData, setNewData] = useState();
+
 
   const sendEmail = () => {
     const data = JSON.stringify({
@@ -71,7 +73,7 @@ const [fetchwebhook, setFetchWebhook] = useState()
   };
 
   const FetchWebhook = async () => {
-   
+    setIsLoading(true);
     try {
       const response = await axios.get('https://gray-famous-butterfly.cyclic.app/api/users/webhook', {
         headers: {
@@ -95,6 +97,7 @@ const [fetchwebhook, setFetchWebhook] = useState()
     objectsArray = objectsArray.concat(FinalResponse.data.data.data.body);
   //   setFetchWebhook(objectsArray);
  setFetchWebhook(objectsArray)
+ setIsLoading(false);
   } 
  
 
@@ -130,8 +133,8 @@ const [fetchwebhook, setFetchWebhook] = useState()
 
   const YourComponent = ({ fetchwebhook }) => {
     const updatedData = [];
-
-    const updateData = (email, event, timestamp) => {
+  
+    const updateData = async (email, event, timestamp) => {
       const existingData = updatedData.find((web) => web.email === email);
   
       if (existingData) {
@@ -143,8 +146,13 @@ const [fetchwebhook, setFetchWebhook] = useState()
         updatedData.push({ email, event, timestamp });
       }
     };
+  if(!fetchwebhook){
+    return <div>Loading...</div>;
+  }
+ 
+   
 
-    fetchwebhook.forEach((web) => {
+    fetchwebhook.map((web) => {
       updateData(web.email, web.event);
     });
 
@@ -160,7 +168,11 @@ const [fetchwebhook, setFetchWebhook] = useState()
           </TableHead>
 
           <TableBody>
+
+          
             {updatedData.map((web, index) => (
+setIsLoading(true),
+
               <TableRow key={web.email} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                 <TableCell component="th" scope="row">
                   <p>{index + 1}</p>
@@ -184,32 +196,6 @@ const [fetchwebhook, setFetchWebhook] = useState()
       </div>
       <div className="AssessmentTable">
       <YourComponent fetchwebhook={fetchwebhook} />
-        {/* <TableContainer className="AssessmentTable" component={Paper}>
-          <Table sx={{ minWidth: 500 }} size="small" aria-label="a dense table">
-            <TableHead>
-              <TableRow >
-              <TableCell  align="left">Sr. No.</TableCell>
-                <TableCell  align="left"> Recipient Email</TableCell>
-                <TableCell  align="left">Email Status</TableCell>
-              </TableRow>
-            </TableHead>
-           
-            <TableBody>
-           {fetchwebhook.map((web, index) => (
-            <TableRow
-            key={web.UniqueID}
-            sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-          >
-             <TableCell component="th" scope="row">
-             <p>{index + 1}</p>
-                  </TableCell>
-                  <TableCell align="left">{web.email}</TableCell>
-                  <TableCell align="left">{web.event}</TableCell>
-            </TableRow>
-           ))}
-            </TableBody>
-          </Table>
-        </TableContainer> */}
       </div>
       <div
           className="modal fade"
