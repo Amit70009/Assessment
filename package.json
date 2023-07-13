@@ -25,6 +25,7 @@
     "bcrypt": "^5.1.0",
     "chart": "^0.1.2",
     "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
     "emailjs-com": "^3.2.0",
     "fetch": "^1.1.0",
     "font-awesome": "^4.7.0",
