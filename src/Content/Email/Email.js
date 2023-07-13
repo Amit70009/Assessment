@@ -56,7 +56,7 @@ const [newData, setNewData] = useState();
       url: "https://api.brevo.com/v3/smtp/email",
       headers: {
         accept: "application/json",
-        "api-key":process.env.REACT_APP_BREVO_API_KEY,
+        "api-key": process.env.REACT_APP_BREVO_API_KEY,
         "content-type": "application/json",
       },
       data: data,
@@ -78,7 +78,7 @@ const [newData, setNewData] = useState();
       const response = await axios.get('https://gray-famous-butterfly.cyclic.app/api/users/webhook', {
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer 1qvt7v46gh4va5h5no1zjnuakgp3fiuszgbamfhd93h75ywpu4'
+          'Authorization': process.env.REACT_APP_WEBHOOK
         }
       });
       
@@ -90,7 +90,7 @@ const [newData, setNewData] = useState();
      const FinalResponse = await axios.get(`https://gray-famous-butterfly.cyclic.app/api/users/webhook/${id}`, {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer 1qvt7v46gh4va5h5no1zjnuakgp3fiuszgbamfhd93h75ywpu4'
+        'Authorization': process.env.REACT_APP_WEBHOOK
       }
     });
 
@@ -152,9 +152,9 @@ const [newData, setNewData] = useState();
  
    
 
-    fetchwebhook.map((web) => {
-      updateData(web.email, web.event);
-    });
+    // fetchwebhook.map((web) => {
+    //   updateData(web.email, web.event);
+    // });
 
     return (
       <TableContainer component={Paper}>
