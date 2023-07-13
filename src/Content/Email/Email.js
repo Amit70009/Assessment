@@ -152,9 +152,9 @@ const [newData, setNewData] = useState();
  
    
 
-    // fetchwebhook.map((web) => {
-    //   updateData(web.email, web.event);
-    // });
+    fetchwebhook.map((web) => {
+      updateData(web.email, web.event);
+    });
 
     return (
       <TableContainer component={Paper}>
