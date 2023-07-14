@@ -38,24 +38,23 @@ export default function SidebarMenu( {children}) {
                     </span>
                 </div>
                 <div className="menu">
-                {sideData.map((item, index) => {
-                        return (
-                            <div className={selected === index ? "menuitem active" : "menuitem"}
-                                key={index}
-                                onClick={() => setSelected(index)}>
-                                <div onClick={() => handleMenuClick(index, item.Navigation)}>
-                                    <item.icon />
-                                    <span>
-                                        {item.Heading}
-                                    </span>
-                                </div>
-                            </div>
-                        )
-                    })
-                    }
-<main> {children} </main>
+  {sideData.map((item, index) => {
+    return (
+      <span
+        className={selected === index ? "menuitem active" : "menuitem"}
+        key={index}
+        onClick={() => handleMenuClick(index, item.Navigation)}
+      >
+        <div>
+          <item.icon />
+          <span>{item.Heading}</span>
+        </div>
+      </span>
+    );
+  })}
+  <main>{children}</main>
+</div>
 
-                </div>
             </div>
         </div>
     )

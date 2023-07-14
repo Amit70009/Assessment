@@ -12,6 +12,7 @@ import AssessSetting from "./Assessment/AssessSetting";
 import ViewQuestion from "./Assessment/ViewQuestion";
 import EmailPage from "./Email/Email"
 import EmailSetting from "./Email/EmailSetting"
+import EmailTemplate from "./Email/Emailtemplate"
 
 
 export default function DashBoard() {
@@ -32,6 +33,7 @@ export default function DashBoard() {
 <Route  path='/setting/assessmentsetting' element={<AssessSetting />}></Route>
 <Route  path='/setting/viewquestion' element={<ViewQuestion />}></Route>
 <Route  path='/email/emailsetting' element={<EmailSetting />}></Route>
+<Route  path='/email/emailsetting/create_template' element={<EmailTemplate />}></Route>
 </Routes>
 </div>
 <div>

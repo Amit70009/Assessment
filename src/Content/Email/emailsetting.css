@@ -2,3 +2,41 @@
     margin-top: 3rem;
     margin-left: 2rem !important;
 }
+
+.edit{
+    display: flex;
+    align-items: center;
+}
+
+.editbutton{
+    margin-left: auto;
+    margin-right: 3rem;
+}
+
+.button-save{
+   margin-right: 0.5rem;
+  }
+
+.form{
+    margin-top: 1rem;
+}
+
+.senderbody{
+    margin-top: 1rem;
+}
+
+.edittemplate{
+    display: flex;
+    align-items: center;
+}
+
+.create-button{
+    margin-left: auto;
+    margin-right: 3rem;
+    
+}
+
+.template-table{
+    margin-right: 2rem;
+    margin-left: 1rem;
+}
