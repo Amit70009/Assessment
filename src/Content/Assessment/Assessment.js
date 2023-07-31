@@ -289,7 +289,7 @@ export default function Assessment() {
                     <button
                       type="button"
                       className="btn btn-outline-info btn-sm"
-                      onClick={() => navigate("/setting/assessmentsetting")}
+                      onClick={() => navigate("/assessment/assessmentsetting")}
                     >
                       Setting
                     </button>

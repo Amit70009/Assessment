@@ -14,13 +14,13 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import OutlinedInput from '@mui/material/OutlinedInput';
 import TextField from "@mui/material/TextField";
-import { Button, Space, Form, Input, InputNumber, Dropdown, message   } from 'antd';
+import { Button, Space, Form, Input, InputNumber, Dropdown, message, Select  } from 'antd';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
+// import Select from '@mui/material/Select';
 
-export default function Email() {
+export default function Email({fetchassessment}) {
   const [isLoading, setIsLoading] = useState(false);
   const [value, setValue] = useState('');
   const [RecieverEmail, setRecieverEmail] = useState("");
@@ -31,6 +31,22 @@ const [emailSubject, setEmailSubject] = useState("")
 const [reqid, setReqID] = useState("req_vaBPviZnIxrdS7OI1R79")
 const [fetchwebhook, setFetchWebhook] = useState()
 const [newData, setNewData] = useState();
+const [profile, setProfile] = useState();
+const [age, setAge] = React.useState('');
+const [selectedValue, setSelectedValue] = useState('Not');
+const { Option } = Select;
+const [emailTemplate, setEmailTemplate] = useState([])
+const [fetch, setFetch] = useState([]);
+const [form] = Form.useForm();
+const [componentSize, setComponentSize] = useState('default');
+  const onFormLayoutChange = ({ size }) => {
+    setComponentSize(size);
+  };
+
+const handleChange = (event) => {
+  setAge(event.target.value);
+};
+
 
 const handleMenuClick = (e) => {
   message.info('Click on menu item.');
@@ -72,11 +88,31 @@ const handleButtonClick = (e) => {
   console.log('click left button', e);
 };
 
-  const sendEmail = () => {
+console.log(fetchassessment);
+
+const ProfileCallOnClick = async () => {
+
+  const x = (JSON.parse(localStorage.getItem("user-details")));
+ 
+  const ProfileCall = await axios.get("https://expensive-seal-kerchief.cyclic.app/api/users/profile", {
+      params: { email: x.email },
+  }, {
+      headers: {
+          "Content-Type": "application/json",
+          "accept": "application/json"
+      }
+  },);
+  const profilecheck = await ProfileCall.data.data.matchUser
+ setProfile(profilecheck)
+}
+
+
+  const sendEmail = async () => {
+    const { sendername, senderemail } = profile;
     const data = JSON.stringify({
       sender: {
-        name: "Amit",
-        email: "amitvarshney30@gmail.com",
+        name: sendername,
+        email: senderemail
       },
       to: [
         {
@@ -95,7 +131,7 @@ const handleButtonClick = (e) => {
       url: "https://api.brevo.com/v3/smtp/email",
       headers: {
         accept: "application/json",
-        "api-key": process.env.REACT_APP_BREVO_API_KEY,
+        "api-key": "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",
         "content-type": "application/json",
       },
       data: data,
@@ -105,11 +141,42 @@ const handleButtonClick = (e) => {
       .request(config)
       .then((response) => {
         window.location.reload()
+        
       })
       .catch((error) => {
         console.log(error);
+        
       });
   };
+
+  useEffect(() => {
+    ProfileCallOnClick()
+}, [])
+
+const FetchEmailTemplate = async () => {
+  const x = (JSON.parse(localStorage.getItem("user-details")));
+  const FetchEmail = await axios.get(`https://gray-famous-butterfly.cyclic.app/api/users/email-template/fetch/${x.userID}`, {
+    headers: {
+      "Content-Type": "application/json",
+      "accept": "application/json"
+  }
+  })
+  setEmailTemplate(FetchEmail.data.data);
+}
+
+const FetchAllAssessment = async () => {
+  const AssessmentData = await axios.get(
+    "https://gray-famous-butterfly.cyclic.app/api/users/fetchallassessment",
+    {
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+    }
+  );
+  setFetch(AssessmentData.data.data.AssessmentCheck);
+};
+
 
   const FetchWebhook = async () => {
     setIsLoading(true);
@@ -170,6 +237,15 @@ const handleButtonClick = (e) => {
     FetchWebhook()
   }, [])
 
+  const handleSendButton = () => {
+    FetchAllAssessment();
+    FetchEmailTemplate();
+  }
+
+  const handleChange1 = (value) => {
+    setSelectedValue(value);
+  };
+
   const YourComponent = ({ fetchwebhook }) => {
     const updatedData = [];
   
@@ -225,10 +301,12 @@ const handleButtonClick = (e) => {
     );
   };
 
+
+
   return (
     <>
       <div className='EmailSetting'>
-      <Space> <Button icon={<SendOutlined />} type="primary" data-bs-toggle="modal" data-bs-target="#sendemail"> Send Email</Button> </Space>
+      <Space> <Button icon={<SendOutlined />} type="primary" data-bs-toggle="modal" data-bs-target="#sendemail" onClick={handleSendButton}> Send Email</Button> </Space>
         
         <a href='/email/emailsetting' className='Email'>Email Setting</a>
       </div>
@@ -259,15 +337,23 @@ const handleButtonClick = (e) => {
                 ></button>
               </div>
               <div className="modal-body sendemail-modal">
-    <Form
-    {...layout}
-    name="nest-messages"
-    onFinish={onFinish}
-    style={{
-      maxWidth: 600,
-    }}
-    validateMessages={validateMessages}
-  >
+              <Form
+      labelCol={{
+        span: 4,
+      }}
+      wrapperCol={{
+        span: 14,
+      }}
+      layout="horizontal"
+      initialValues={{
+        size: componentSize,
+      }}
+      onValuesChange={onFormLayoutChange}
+      size={componentSize}
+      style={{
+        maxWidth: 600,
+      }}
+    >
     <Form.Item
       name={['user', 'name']}
       label="Full Name"
@@ -278,7 +364,7 @@ const handleButtonClick = (e) => {
         },
       ]}
     >
-      <Input className='input'/>
+      <Input className=''/>
     </Form.Item>
     <Form.Item
       name={['user', 'email']}
@@ -306,28 +392,39 @@ const handleButtonClick = (e) => {
     >
       <Input className='input'/>
     </Form.Item>
-    <Form.Item
-      name={['user', 'Assessment']}
-      label="Assessment"
-      rules={[
-        {
-          type: 'text',
-        },
-      ]}
-    >
-      
-    </Form.Item>
-    <Form.Item
-      name={['user', 'body']}
-      label="Email Template"
-      rules={[
-        {
-          type: 'text',
-        },
-      ]}
-    >
-    </Form.Item>
     
+   <div className="check input">
+    <p>Select Template : </p>
+    <div class="form-group form-control-sm">
+    {emailTemplate ? (
+  <select className="form-control form-control-sm more" id="exampleFormControlSelect1">
+    {emailTemplate.map((item) => (
+      <option key={item.uniqueID} value={item.uniqueID}>
+        {item.name}
+      </option>
+    ))}
+  </select>
+) : (
+  <p>Loading email template...</p>
+)}
+</div>
+</div>
+  <div className="check input">
+    <p>Select Assessment : </p>
+    <div class="form-group form-control-sm">
+    {emailTemplate ? (
+  <select className="form-control form-control-sm more" id="exampleFormControlSelect1">
+    {fetch.map((item) => (
+      <option key={item.uniqueID} value={item.uniqueID}>
+        {item.AssessmentName}
+      </option>
+    ))}
+  </select>
+) : (
+  <p>Loading email template...</p>
+)}
+  </div>
+  </div>
     </Form>
                 
               </div>

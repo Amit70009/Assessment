@@ -63,6 +63,7 @@ export default function AssessmentSetting() {
   const [length, setLength] = useState([])
   const [questions, setQuestions] = useState([]);
   const [editid, setEditID] = useState();
+  const [questiontype, setQuestionType] = useState("radio");
   const [currentpage, setCurrentPage] = useState(1);
     const recordsperpage = 6;
     const lastindex = currentpage * recordsperpage;
@@ -182,7 +183,7 @@ export default function AssessmentSetting() {
       answer,
     };
 
-  const QuestionUpdate = await axios.put(
+  const QuestionUpdate = await axios.patch(
     `https://gray-famous-butterfly.cyclic.app/api/users/updatequestion/${quesuniqueid}`,
       updatedQuestion,
     {
@@ -242,6 +243,7 @@ export default function AssessmentSetting() {
           number,
           require,
           answer,
+          questiontype,
           assessid: localStorage.getItem("Assessment ID"),
         },
         {
@@ -252,6 +254,7 @@ export default function AssessmentSetting() {
       )
       .then((res) => {
         window.location.reload();
+   
       })
       .catch((err) => {
         console.log(err);
@@ -307,6 +310,7 @@ export default function AssessmentSetting() {
       setDType(showType);
       setDID(showID);
       setPara(true);
+      setQuestionType(getvalue)
   
     } else if (getvalue == "radio") {
       const showType = "radio";
@@ -314,10 +318,11 @@ export default function AssessmentSetting() {
       setDType(showType);
       setDID(showID);
       setPara(true);
+      setQuestionType(getvalue)
     
     } else if(getvalue == "paragraph") {
       setPara(false);
-
+      setQuestionType(getvalue)
     };
   };
 
@@ -405,7 +410,7 @@ export default function AssessmentSetting() {
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
                     <TableCell component="th" scope="row">
-                      <p>{index + 1}</p>
+                      <p>{index + 1 + (currentpage - 1) * recordsperpage}</p>
                     </TableCell>
 
                     <TableCell align="left"> {row.question}</TableCell>
@@ -511,7 +516,7 @@ export default function AssessmentSetting() {
       </div>
   )
 ))}
-{/* <button onClick={addOption}>Add Option</button> */}
+
     <p>Answer: {item.answer}</p>
     <Select
                             labelId="demo-multiple-checkbox-label"

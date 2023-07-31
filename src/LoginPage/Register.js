@@ -53,6 +53,7 @@ export default function SignInSide() {
       }
       else if (registercall && registercall.data && registercall.data.status == 200){
         alert(registercall.data.message)
+        navig("/login")
       }
      
   }

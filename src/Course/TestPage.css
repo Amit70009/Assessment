@@ -1,0 +1,45 @@
+.QuestionIndex{
+    cursor: pointer;
+    margin-top: 1rem;
+    margin-left: 1rem;
+}
+
+.countdown{
+    font-size: 32px
+}
+
+.QuestionDetails{
+    margin-left: 3rem;
+    margin-top: 2rem;
+}
+.AnswerDetails{
+    margin-left: 5rem;
+    margin-top: 1rem;
+}
+
+.gap{
+    margin-right: 1rem;
+}
+
+.AnswerDetails>h6{
+    margin-bottom: 1.5rem;
+}
+
+.PrevButton{
+    margin-top: auto;
+    margin-bottom: 2rem;
+    margin-left: 4rem;
+    
+}
+
+.NextButton{
+    margin-top: auton !important;
+    margin-bottom: 2% !important;
+    margin-left: auto !important;
+    margin-right: 3rem !important;
+}
+
+
+  
+
+ 

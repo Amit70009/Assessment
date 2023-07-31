@@ -9,8 +9,9 @@
 }
 
 .editbutton{
-    margin-left: auto;
-    margin-right: 3rem;
+    margin-left: auto !important;
+    margin-right: 3rem !important;
+    align-items: center !important;
 }
 
 .button-save{
@@ -39,4 +40,11 @@
 .template-table{
     margin-right: 2rem;
     margin-left: 1rem;
+}
+
+.editbutton{
+   justify-content: center;
+}
+.tablecell{
+   margin-left: 1rem;
 }

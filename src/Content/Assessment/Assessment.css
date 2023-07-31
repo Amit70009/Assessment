@@ -27,9 +27,7 @@
     gap: 20rem;
 }
 
-.editbutton>button{
-  gap: 2rem;
-}
+
 
 .Actionbtn{
   display: flex;

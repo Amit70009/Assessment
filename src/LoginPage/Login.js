@@ -22,6 +22,7 @@ import Stack from '@mui/material/Stack';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import App from '../App';
+import EmailSetting from '../Content/Email/EmailSetting';
 
 function Copyright(props) {
   
@@ -96,7 +97,8 @@ export default function SignInSide() {
             last_name: loginCall.data.data.last_name,
             role: loginCall.data.data.role,
             email: loginCall.data.data.email,
-            userID: loginCall.data.data.userId
+            userID: loginCall.data.data.userId,
+            senderid: loginCall.data.data.senderid
           })
           
          ),

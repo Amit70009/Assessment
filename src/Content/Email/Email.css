@@ -15,10 +15,20 @@
     display: flex;
   }
 
-  .input{
-    width: 200% !important;
-  }
+ 
 
   .SNo.table{
     width: 3rem;
   }
+
+  .check{
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    /* justify-content: center; */
+  }
+
+  /* .more{
+    width: 400%;
+  } */
+ 
