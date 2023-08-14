@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import axios from "axios";
 import "./Email.css";
 import { useState, useEffect } from 'react';
@@ -18,6 +18,7 @@ import { Button, Space, Form, Input, InputNumber, Dropdown, message, Select  } f
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
+
 // import Select from '@mui/material/Select';
 
 export default function Email({fetchassessment}) {
@@ -42,6 +43,8 @@ const [componentSize, setComponentSize] = useState('default');
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
   };
+
+ 
 
 const handleChange = (event) => {
   setAge(event.target.value);
@@ -122,7 +125,8 @@ const ProfileCallOnClick = async () => {
       ],
       subject: emailSubject,
       htmlContent:
-        "<html><head></head><body><p>Hello,</p>This is my first transactional email sent from Brevo.</p></body></html>",
+        `
+        `,
     });
 
     const config = {

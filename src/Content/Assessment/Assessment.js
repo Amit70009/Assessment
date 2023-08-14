@@ -89,18 +89,21 @@ export default function Assessment() {
 
   const FetchAllAssessment = async () => {
     setIsLoading(true);
-
+    const local = (JSON.parse(localStorage.getItem("user-details")))
     const AssessmentData = await axios.get(
-      "https://gray-famous-butterfly.cyclic.app/api/users/fetchallassessment",
+      `https://gray-famous-butterfly.cyclic.app/api/users/fetchallassessment/${local.senderid}`,
       {
         headers: {
           "Content-Type": "application/json",
           accept: "application/json",
         },
+        data: {
+
+        }
       }
     );
-    setFetch(AssessmentData.data.data.AssessmentCheck);
-    // console.log(AssessmentData.data.data.AssessmentCheck);
+    setFetch(AssessmentData.data.data);
+    // console.log(AssessmentData.data.data);
     setIsLoading(false);
   };
 
@@ -190,11 +193,13 @@ export default function Assessment() {
 
   const AddAssessment = async (e) => {
     // e.prevent.default();
+    const local = (JSON.parse(localStorage.getItem("user-details")))
     axios
       .post(
         "https://gray-famous-butterfly.cyclic.app/api/users/addassessment",
         {
           AssessmentName: assessmentname,
+          UserID: local.senderid
         },
         {
           headers: {
@@ -251,12 +256,12 @@ export default function Assessment() {
                   <TableCell component="th" scope="row">
                     {row.AssessmentName}
                   </TableCell>
-                  <TableCell align="left">{row.UniqueID}</TableCell>
+                  <TableCell align="left">{row.AssessID}</TableCell>
                   <TableCell align="center">
                     <button
                       type="button"
                       className="btn btn-outline-success btn-sm"
-                      onClick={() => handleViewAssessment(row.UniqueID)}
+                      onClick={() => handleViewAssessment(row.AssessID)}
                     >
                       View_Question
                     </button>

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, createContext } from "react";
 import "./emailsetting.css";
 import { useState } from "react";
 import { Button, Form, Input, Modal, InputNumber } from "antd";
@@ -22,6 +22,7 @@ import TextField from "@mui/material/TextField";
 import axios from "axios";
 import Email from "./Email";
 
+
 const EmailSetting = () => {
   const [componentDisabled, setComponentDisabled] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
@@ -41,21 +42,24 @@ const EmailSetting = () => {
   const [updateEmailName, setUpdateEmailName] = useState();
   const [updateEmailBody, setUpdateEmailBody] = useState(null);
 
-
+  
   const showModal = () => {
     setIsModalOpen(true);
   };
   const handleOk = () => {
     setIsModalOpen(false);
+    
   };
   const handleCancel = () => {
     setIsModalOpen(false);
   };
 
+
   const exportHtml = () => {
     emailEditorRef.current.editor.exportHtml((data) => {
       const { design, html } = data;
-      console.log("exportHtml", design);
+     setUpdateEmailBody(html);
+     setIsModalOpen(false);
     });
   };
 
@@ -227,6 +231,7 @@ useEffect(() => {
 
   return (
     <>
+
     <div className="emailsettingpage">
       <h5>Email Setting</h5>
       <Breadcrumbs aria-label="breadcrumb">
@@ -372,7 +377,7 @@ useEffect(() => {
             key="submit"
             type="primary"
             loading={loading}
-            onClick={handleOk}
+            onClick={exportHtml}
           >
             Create
           </Button>,
@@ -382,9 +387,9 @@ useEffect(() => {
         }}
       >
         <div className="email-template">
-          <div>
+          {/* <div>
             <button onClick={exportHtml}>Export HTML</button>
-          </div>
+          </div> */}
 
           <EmailEditor ref={emailEditorRef} onReady={onReady} />
         </div>
