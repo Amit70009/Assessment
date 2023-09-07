@@ -121,6 +121,7 @@ export default function Email({ fetchassessment }) {
     setProfile(profilecheck);
   };
 
+  
   const sendEmail = async () => {
     const { sendername, senderemail } = profile;
     const x = JSON.parse(localStorage.getItem("user-details"));
@@ -147,8 +148,7 @@ export default function Email({ fetchassessment }) {
         url: "https://api.brevo.com/v3/smtp/email",
         headers: {
           accept: "application/json",
-          "api-key":
-            "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",
+          "api-key": process.env.REACT_APP_BREVO_API_KEY,
           "content-type": "application/json",
         },
         data: data,
