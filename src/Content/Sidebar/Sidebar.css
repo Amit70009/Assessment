@@ -20,6 +20,7 @@
 .Logo>img {
    width: 3rem;
    height: 3rem; 
+   mix-blend-mode: multiply;
 }
 
 .Logo>span>span {

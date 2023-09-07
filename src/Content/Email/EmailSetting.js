@@ -15,13 +15,12 @@ import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import Link from "@mui/material/Link";
-import EmailEditor from "react-email-editor";
+import EmailEditor, { EditorRef, EmailEditorProps } from "react-email-editor";
 import { useRef } from "react";
 import { render } from "react-dom";
 import TextField from "@mui/material/TextField";
 import axios from "axios";
 import Email from "./Email";
-
 
 const EmailSetting = () => {
   const [componentDisabled, setComponentDisabled] = useState(true);
@@ -42,33 +41,46 @@ const EmailSetting = () => {
   const [updateEmailName, setUpdateEmailName] = useState();
   const [updateEmailBody, setUpdateEmailBody] = useState(null);
 
-  
   const showModal = () => {
     setIsModalOpen(true);
   };
   const handleOk = () => {
     setIsModalOpen(false);
-    
   };
   const handleCancel = () => {
     setIsModalOpen(false);
   };
 
-
+  // const exportHtml = () => {
+  //   emailEditorRef.current.editor.exportHtml((data) => {
+  //     const { design, html } = data;
+  //     // console.log('exportHtml', html);
+  //     setUpdateEmailBody(html);
+  //   });
+  // };
   const exportHtml = () => {
+  return new Promise((resolve) => {
     emailEditorRef.current.editor.exportHtml((data) => {
       const { design, html } = data;
-     setUpdateEmailBody(html);
-     setIsModalOpen(false);
+      // console.log('exportHtml', html);
+      resolve(html);
+      return html
+      // setUpdateEmailBody(html);
+      // console.log("HTML", html);
+      // console.log("Updated EMail", updateEmailBody);
     });
-  };
+  });
+};
 
-
-  const onReady = () => {
+  const onReady = (unlayer) => {
     // editor is ready
     // you can load your template here;
-    // const templateJson = {};
-    // emailEditorRef.current.editor.loadDesign(templateJson);
+    // the design json can be obtained by calling
+    // unlayer.loadDesign(callback) or unlayer.exportHtml(callback)
+
+    // const templateJson = {updateEmailBody};
+    // unlayer.loadDesign(updateEmailBody);
+    // console.log(updateEmailBody);
   };
 
   const handleHtmlChange = (event) => {
@@ -113,7 +125,7 @@ const EmailSetting = () => {
     UpdateSender();
     setIsEditing(false);
     setComponentDisabled(true);
-    
+
     // window.location.reload();
   };
 
@@ -122,287 +134,371 @@ const EmailSetting = () => {
     setComponentDisabled(true);
   };
 
-
   const ProfileCallOnClick = async () => {
+    const x = JSON.parse(localStorage.getItem("user-details"));
 
-    const x = (JSON.parse(localStorage.getItem("user-details")));
-   
-    const ProfileCall = await axios.get("https://expensive-seal-kerchief.cyclic.app/api/users/profile", {
+    const ProfileCall = await axios.get(
+      "https://expensive-seal-kerchief.cyclic.app/api/users/profile",
+      {
         params: { email: x.email },
-    }, {
+      },
+      {
         headers: {
-            "Content-Type": "application/json",
-            "accept": "application/json"
-        }
-    },);
-    const profilecheck = [await ProfileCall.data.data.matchUser]
+          "Content-Type": "application/json",
+          accept: "application/json",
+        },
+      }
+    );
+    const profilecheck = [await ProfileCall.data.data.matchUser];
     setProfile(profilecheck);
-}
+  };
 
-const AddEmailTemplate = async () => {
-  const get = (JSON.parse(localStorage.getItem("user-details")));
-  const EmailTemplate = await axios.post("https://gray-famous-butterfly.cyclic.app/api/users/email-template", {
-name: emailtemplatename,
-userid: get.userID
-  }, {
-    headers: {
-      "Content-Type": "application/json",
-      accept: "application/json",
-    },
-  }).then((res) => {
-    window.location.reload();
-  })
-}
+  const AddEmailTemplate = async () => {
+    const get = JSON.parse(localStorage.getItem("user-details"));
+    const EmailTemplate = await axios
+      .post(
+        "https://gray-famous-butterfly.cyclic.app/api/users/email-template",
+        {
+          name: emailtemplatename,
+          userid: get.userID,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            accept: "application/json",
+          },
+        }
+      )
+      .then((res) => {
+        window.location.reload();
+      });
+  };
 
-const FetchEmailTemplate = async () => {
-  const x = (JSON.parse(localStorage.getItem("user-details")));
-  const FetchEmail = await axios.get(`https://gray-famous-butterfly.cyclic.app/api/users/email-template/fetch/${x.userID}`, {
-    headers: {
-      "Content-Type": "application/json",
-      "accept": "application/json"
-  }
-  })
-setFetchEmail(FetchEmail.data.data);
-}
-
-const handleDelete = (id) => {
-  localStorage.setItem("TemplateID", id)
-}
-
-const DeleteEmailTemplate = async () => {
- 
-  const FetchEmail = await axios.delete(`https://gray-famous-butterfly.cyclic.app/api/users/email-template/delete/${localStorage.getItem("TemplateID")}`, {
-    headers: {
-      "Content-Type": "application/json",
-      "accept": "application/json"
-  }
-  }).then((res) => {
-    window.location.reload();
-  })
-}
-
-const UpdateTemplate = async () => {
-
-  const x = (JSON.parse(localStorage.getItem("user-details")));
-  const UpdateCall = await axios.patch(`https://gray-famous-butterfly.cyclic.app/api/users/send-from/update/${localStorage.getItem("TemplateID")}`, {
-    name: updateEmailName,
-    body: updateEmailBody
-  },
-    
-  {
-      headers: {
+  const FetchEmailTemplate = async () => {
+    const x = JSON.parse(localStorage.getItem("user-details"));
+    const FetchEmail = await axios.get(
+      `https://gray-famous-butterfly.cyclic.app/api/users/email-template/allfetch/${x.userID}`,
+      {
+        headers: {
           "Content-Type": "application/json",
-          "accept": "application/json"
+          accept: "application/json",
+        },
       }
-  },
-  ).then((res) => {
-    window.location.reload();
-  });
-}
+    );
+    setFetchEmail(FetchEmail.data.data);
+  };
 
-const UpdateSender = async () => {
+  const handleDelete = (id) => {
+    localStorage.setItem("TemplateID", id);
+  };
 
-  const x = (JSON.parse(localStorage.getItem("user-details")));
-  const UpdateCall = await axios.post("https://expensive-seal-kerchief.cyclic.app/api/users/update", {
-      email: x.email,
-      sendername: sendername,
-    senderemail: senderemail
-  },
-    
-  {
-      headers: {
+  const DeleteEmailTemplate = async () => {
+    const FetchEmail = await axios
+      .delete(
+        `https://gray-famous-butterfly.cyclic.app/api/users/email-template/delete/${localStorage.getItem(
+          "TemplateID"
+        )}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            accept: "application/json",
+          },
+        }
+      )
+      .then((res) => {
+        window.location.reload();
+      });
+  };
+
+  const UpdateTemplate = async () => {
+    const x = JSON.parse(localStorage.getItem("user-details"));
+    const UpdateCall = await axios
+      .patch(
+        `https://gray-famous-butterfly.cyclic.app/api/users/send-from/update/${localStorage.getItem(
+          "TemplateID"
+        )}`,
+        {
+          name: updateEmailName,
+          body: updateEmailBody,
+        },
+
+        {
+          headers: {
+            "Content-Type": "application/json",
+            accept: "application/json",
+          },
+        }
+      )
+      .then((res) => {
+        // window.location.reload();
+        console.log(res);
+      });
+  };
+
+  const UpdateSender = async () => {
+    const x = JSON.parse(localStorage.getItem("user-details"));
+    const UpdateCall = await axios.post(
+      "https://expensive-seal-kerchief.cyclic.app/api/users/update",
+      {
+        email: x.email,
+        sendername: sendername,
+        senderemail: senderemail,
+      },
+
+      {
+        headers: {
           "Content-Type": "application/json",
-          "accept": "application/json"
+          accept: "application/json",
+        },
       }
-  },);
-}
+    );
+  };
 
-const handleDeleteTemplate = () => {
-  DeleteEmailTemplate();
-}
+  const handleDesign = async (id) => {
+    showModal();
+    localStorage.setItem("TemplateID", id);
+  }
 
-useEffect(() => {
-  FetchEmailTemplate()
-}, []);
-  
+  const handleCreateUpdate = async () => {
+   
+    const updatedHtml = await exportHtml();
+    setUpdateEmailBody(updatedHtml);
+    console.log("Test call", updateEmailBody);
+    // console.log(updatedHtml); // Wait for exportHtml to complete
+  //  await UpdateTemplate();
+    // setIsModalOpen(false);
+  };
+
+  const handleDeleteTemplate = () => {
+    DeleteEmailTemplate();
+  };
+
   useEffect(() => {
-    ProfileCallOnClick()
+    FetchEmailTemplate();
+  }, []);
+
+  useEffect(() => {
+    ProfileCallOnClick();
   }, []);
 
   return (
     <>
-
-    <div className="emailsettingpage">
-      <h5>Email Setting</h5>
-      <Breadcrumbs aria-label="breadcrumb">
-        <Link underline="hover" color="inherit" href="/email">
-          Email
-        </Link>
-        <Typography color="text.primary">Email-Setting</Typography>
-      </Breadcrumbs>
-      <div className="senderbody">
-        
+      <div className="emailsettingpage">
+        <h5>Email Setting</h5>
+        <Breadcrumbs aria-label="breadcrumb">
+          <Link underline="hover" color="inherit" href="/email">
+            Email
+          </Link>
+          <Typography color="text.primary">Email-Setting</Typography>
+        </Breadcrumbs>
+        <div className="senderbody">
           <div>
             {profile.map((item) => (
-               <div key={item.senderid}>
+              <div key={item.senderid}>
                 <div className="edit">
-          <div>
-            <h6>Sender Details</h6>
-          </div>
-               <div className="editbutton">
-                 {isEditing ? (
-                   <>
-                     <button
-                       className="btn btn-outline-info btn-sm button-save"
-                       onClick={handleCancelClick}
-                     >
-                       Cancel
-                     </button>
-                     <button
-                       className="btn btn-outline-success btn-sm"
-                       onClick={handleSaveClick}
-                     >
-                       Save
-                     </button>
-                   </>
-                 ) : (
-                   <button
-                     className="btn btn-outline-primary btn-sm"
-                     onClick={handleEditClick}
-                   >
-                     Edit
-                   </button>
-                 )}
-                   </div>
-                   </div>
-                 <Form
-          {...layout}
-          name="nest-messages"
-          disabled={componentDisabled}
-          onFinish={onFinish}
-          className="form"
-          style={{
-            maxWidth: 600,
-          }}
-          validateMessages={validateMessages}
-        >
-          <Form.Item
-  name={["user", "name"]}
-  label="Name"
-  initialValue={item.sendername}
-  onChange={(e) => setSenderName(e.target.value)}
->
-  <Input />
-</Form.Item>
-<Form.Item
-  name={["user", "email"]}
-  label="Email"
-  initialValue={item.senderemail}
-  onChange={(e) => setSenderEmail(e.target.value)}
-  rules={[
-    {
-      type: "email",
-      required: true,
-    },
-  ]}
->
-  <Input />
-</Form.Item>
-
-        </Form>
-             
-               
-               </div>
-       
+                  <div>
+                    <h6>Sender Details</h6>
+                  </div>
+                  <div className="editbutton">
+                    {isEditing ? (
+                      <>
+                        <button
+                          className="btn btn-outline-info btn-sm button-save"
+                          onClick={handleCancelClick}
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          className="btn btn-outline-success btn-sm"
+                          onClick={handleSaveClick}
+                        >
+                          Save
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        className="btn btn-outline-primary btn-sm"
+                        onClick={handleEditClick}
+                      >
+                        Edit
+                      </button>
+                    )}
+                  </div>
+                </div>
+                <Form
+                  {...layout}
+                  name="nest-messages"
+                  disabled={componentDisabled}
+                  onFinish={onFinish}
+                  className="form"
+                  style={{
+                    maxWidth: 600,
+                  }}
+                  validateMessages={validateMessages}
+                >
+                  <Form.Item
+                    name={["user", "name"]}
+                    label="Name"
+                    initialValue={item.sendername}
+                    onChange={(e) => setSenderName(e.target.value)}
+                  >
+                    <Input />
+                  </Form.Item>
+                  <Form.Item
+                    name={["user", "email"]}
+                    label="Email"
+                    initialValue={item.senderemail}
+                    onChange={(e) => setSenderEmail(e.target.value)}
+                    rules={[
+                      {
+                        type: "email",
+                        required: true,
+                      },
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Form>
+              </div>
             ))}
-
-</div>
-        
-      </div>
-      <div className="edittemplate">
-        <div>
-          <h6>Email Template</h6>{" "}
+          </div>
         </div>
-        <div className="create-button">
-          <button
-            className="btn btn-outline-success btn-sm"
-            data-bs-toggle="modal" data-bs-target="#emailtemplate"
+        <div className="edittemplate">
+          <div>
+            <h6>Email Template</h6>{" "}
+          </div>
+          <div className="create-button">
+            <button
+              className="btn btn-outline-success btn-sm"
+              data-bs-toggle="modal"
+              data-bs-target="#emailtemplate"
 
-            // onClick={() => alert("working")}
-          >
-            Create New Template
-          </button>
+              // onClick={() => alert("working")}
+            >
+              Create New Template
+            </button>
+          </div>
         </div>
-      </div>
-      <div className="template-table">
-        <TableContainer className="AssessmentTable" component={Paper}>
-          <Table sx={{ minWidth: 500 }} size="small" aria-label="a dense table">
-            <TableHead>
-              <TableRow>
-                <TableCell>Template Name</TableCell>
-                <TableCell align="left">Preview</TableCell>
-                <TableCell align="center">Design</TableCell>
-                <TableCell align="center">Action</TableCell>
-              </TableRow>
-            </TableHead>
+        <div className="template-table">
+          <TableContainer className="AssessmentTable" component={Paper}>
+            <Table
+              sx={{ minWidth: 500 }}
+              size="small"
+              aria-label="a dense table"
+            >
+              <TableHead>
+                <TableRow>
+                  <TableCell>Template Name</TableCell>
+                  <TableCell align="left">Preview</TableCell>
+                  <TableCell align="center">Design</TableCell>
+                  <TableCell align="center">Action</TableCell>
+                </TableRow>
+              </TableHead>
 
-            <TableBody>
-              {fetchemail.map((item, index) => (
-            <TableRow
-            key={item.UniqueID}
-            sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-          >
-                   <TableCell>{item.name}</TableCell>
-                   <TableCell><button className=" btn btn-outline-primary btn-sm" align="center">Preview</button></TableCell>
-                   <TableCell align="center"><button className=" btn btn-outline-info btn-sm" align="center" onClick={showModal}>Design</button></TableCell>
-                   <TableCell align="center"><button className=" btn btn-outline-info btn-sm" align="center" onClick={() => handleDelete(item.UniqueID)} data-bs-toggle="modal" data-bs-target="#updatetemplate">Edit</button>
-                   <button className=" btn btn-outline-danger btn-sm tablecell" align="center" onClick={() => handleDelete(item.UniqueID)} data-bs-toggle="modal" data-bs-target="#deletetemplate">Delete</button></TableCell>
-               </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </div>
-      <Modal
-        title="Create Template"
-        open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        width={1200}
-        footer={[
-          <Button key="back" onClick={handleCancel}>
-            Cancel
-          </Button>,
-          <Button
-            key="submit"
-            type="primary"
-            loading={loading}
-            onClick={exportHtml}
-          >
-            Create
-          </Button>,
-        ]}
-        style={{
-          top: 20,
-        }}
-      >
-        <div className="email-template">
-          {/* <div>
-            <button onClick={exportHtml}>Export HTML</button>
-          </div> */}
-
-          <EmailEditor ref={emailEditorRef} onReady={onReady} />
+              <TableBody>
+                {fetchemail.map((item, index) => (
+                  <TableRow
+                    key={item.UniqueID}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell>{item.name}</TableCell>
+                    <TableCell>
+                      <button
+                        className=" btn btn-outline-primary btn-sm"
+                        align="center"
+                        onClick={onReady}
+                      >
+                        Preview
+                      </button>
+                    </TableCell>
+                    <TableCell align="center">
+                      <button
+                        className=" btn btn-outline-info btn-sm"
+                        align="center"
+                        onClick={() => handleDesign(item.UniqueID)}
+                      >
+                        Design
+                      </button>
+                    </TableCell>
+                    <TableCell align="center">
+                      <button
+                        className=" btn btn-outline-info btn-sm"
+                        align="center"
+                        onClick={() => handleDelete(item.UniqueID)}
+                        data-bs-toggle="modal"
+                        data-bs-target="#updatetemplate"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className=" btn btn-outline-danger btn-sm tablecell"
+                        align="center"
+                        onClick={() => handleDelete(item.UniqueID)}
+                        data-bs-toggle="modal"
+                        data-bs-target="#deletetemplate"
+                      >
+                        Delete
+                      </button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         </div>
-      </Modal>
-      <div class="modal fade" id="emailtemplate" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Create Email Template</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-      <p>Please enter the Email Template Name</p>
+
+        <Modal
+          title="Create Template"
+          open={isModalOpen}
+          onOk={handleOk}
+          onCancel={handleCancel}
+          width={1200}
+          footer={[
+            <Button key="back" onClick={handleCancel}>
+              Cancel
+            </Button>,
+            <Button
+              key="submit"
+              type="primary"
+              loading={loading}
+              onClick={handleCreateUpdate}
+            >
+              Create
+            </Button>,
+          ]}
+          style={{
+            top: 20,
+          }}
+        >
+          <div className="email-template">
+         
+
+            <EmailEditor ref={emailEditorRef} onReady={onReady} />
+          </div>
+          //{" "}
+        </Modal>
+        <div
+          class="modal fade"
+          id="emailtemplate"
+          tabindex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">
+                  Create Email Template
+                </h1>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <p>Please enter the Email Template Name</p>
                 <TextField
                   margin="dense"
                   id="name"
@@ -412,23 +508,48 @@ useEffect(() => {
                   fullWidth
                   variant="standard"
                 />
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" onClick={() => AddEmailTemplate()}>Create</button>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="modal fade" id="updatetemplate" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Update Email Template</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-      <p>Please enter the Email Template Name to update</p>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  onClick={() => AddEmailTemplate()}
+                >
+                  Create
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="modal fade"
+          id="updatetemplate"
+          tabindex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">
+                  Update Email Template
+                </h1>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <p>Please enter the Email Template Name to update</p>
                 <TextField
                   margin="dense"
                   id="name"
@@ -438,70 +559,77 @@ useEffect(() => {
                   fullWidth
                   variant="standard"
                 />
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" onClick={() => UpdateTemplate()}>Update</button>
-      </div>
-    </div>
-  </div>
-</div>
-<div
-              className="modal fade"
-              id="deletetemplate"
-              data-bs-backdrop="static"
-              data-bs-keyboard="false"
-              tabIndex="-1"
-              aria-labelledby="staticBackdropLabel"
-              aria-hidden="true"
-              // key={item.id}
-            >
-              <div className="modal-dialog">
-                <div className="modal-content">
-                  <div className="modal-header">
-                    <h1 className="modal-title fs-5" id="staticBackdropLabel">
-                      Delete Template
-                    </h1>
-                    <button
-                      type="button"
-                      className="btn-close"
-                      data-bs-dismiss="modal"
-                      aria-label="Close"
-                    ></button>
-                  </div>
-
-                  <div className="modal-body">
-                    <p>
-                      Are you sure, you want to delete this template?
-                    </p>
-                  </div>
-                  <div className="modal-footer">
-                    <button
-                      type="button"
-                      className="btn btn-outline-primary"
-                      data-bs-dismiss="modal"
-                    >
-                      Cancel
-                    </button>
-                   
-                    <button
-                    
-                      type="button"
-                      className="btn btn-outline-danger"
-                      onClick={handleDeleteTemplate}
-                    >
-                      {" "}
-                      Delete
-                    </button>
-                  
-                  </div>
-                </div>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  onClick={() => UpdateTemplate()}
+                >
+                  Update
+                </button>
               </div>
             </div>
-    </div>
+          </div>
+        </div>
+        <div
+          className="modal fade"
+          id="deletetemplate"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+          tabIndex="-1"
+          aria-labelledby="staticBackdropLabel"
+          aria-hidden="true"
+          // key={item.id}
+        >
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h1 className="modal-title fs-5" id="staticBackdropLabel">
+                  Delete Template
+                </h1>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+
+              <div className="modal-body">
+                <p>Are you sure, you want to delete this template?</p>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-outline-primary"
+                  data-bs-dismiss="modal"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="button"
+                  className="btn btn-outline-danger"
+                  onClick={handleDeleteTemplate}
+                >
+                  {" "}
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
-
 };
 
 export default EmailSetting;
