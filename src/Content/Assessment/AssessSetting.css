@@ -8,3 +8,41 @@
     margin-left: auto;
     margin-right: 2rem;
 }
+
+.MainBody{
+    margin-top: 3rem;
+    margin-left: 5rem;
+    
+}
+
+.cutoff{
+    display: flex;
+    align-items: center;
+}
+
+.autosubmit{
+    margin-top: 2rem;
+    display: flex;
+    align-items: center;
+}
+
+.switch{
+    margin-right: 5rem;
+    margin-left: auto;
+    display: flex;
+}
+.cutofftime{
+    margin-left: 5rem;
+    display: flex;
+    margin-top: 2rem;
+    align-items: center;
+    gap: 5rem;
+}
+
+.cutofftimer{
+    display: flex;
+    align-items: center;
+    margin-left: auto !important;
+    margin-right: 10rem;
+    gap: 1rem;
+}

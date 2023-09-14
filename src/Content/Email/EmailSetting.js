@@ -39,7 +39,7 @@ const EmailSetting = () => {
   const [fetchemail, setFetchEmail] = useState([]);
   const [preview, setPreview] = useState();
   const [updateEmailName, setUpdateEmailName] = useState();
-  const [updateEmailBody, setUpdateEmailBody] = useState(null);
+  const [updateEmailBody, setUpdateEmailBody] = useState('');
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -64,8 +64,7 @@ const EmailSetting = () => {
       const { design, html } = data;
       // console.log('exportHtml', html);
       resolve(html);
-      return html
-      // setUpdateEmailBody(html);
+      setUpdateEmailBody(html);
       // console.log("HTML", html);
       // console.log("Updated EMail", updateEmailBody);
     });
@@ -262,8 +261,8 @@ const EmailSetting = () => {
   const handleCreateUpdate = async () => {
    
     const updatedHtml = await exportHtml();
-    setUpdateEmailBody(updatedHtml);
-    console.log("Test call", updateEmailBody);
+    // setUpdateEmailBody(updatedHtml);
+    console.log("Test call", test);
     // console.log(updatedHtml); // Wait for exportHtml to complete
   //  await UpdateTemplate();
     // setIsModalOpen(false);
@@ -389,7 +388,7 @@ const EmailSetting = () => {
               <TableHead>
                 <TableRow>
                   <TableCell>Template Name</TableCell>
-                  <TableCell align="left">Preview</TableCell>
+               
                   <TableCell align="center">Design</TableCell>
                   <TableCell align="center">Action</TableCell>
                 </TableRow>
@@ -402,15 +401,7 @@ const EmailSetting = () => {
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
                     <TableCell>{item.name}</TableCell>
-                    <TableCell>
-                      <button
-                        className=" btn btn-outline-primary btn-sm"
-                        align="center"
-                        onClick={onReady}
-                      >
-                        Preview
-                      </button>
-                    </TableCell>
+                    
                     <TableCell align="center">
                       <button
                         className=" btn btn-outline-info btn-sm"

@@ -55,6 +55,7 @@ export default function Assessment() {
   const npages = Math.ceil(fetch.length / recordsperpage);
   const numbers = [...Array(npages + 1).keys()].slice(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [AssessmentID, setAssessmentID] = useState([])
 
   const handleChange = (event, value) => {
     setPage(value);
@@ -71,6 +72,7 @@ export default function Assessment() {
   ) {
     return { AssessmentName, AssessmentID, Edit, ViewQuestion, Setting };
   }
+console.log(records);
 
   const deleteBasedAssess = async () => {
     const deleteData = await axios.delete(`https://gray-famous-butterfly.cyclic.app/api/users/deletequestionfromassessment/${localStorage.getItem("UniqueID")}`, {
@@ -113,11 +115,12 @@ export default function Assessment() {
 
   const handleClickOpen = (id) => {
     setUniqueID(id);
-    
+    console.log(uniqueid);
   };
 
   const handleDelete = (id) => {
     localStorage.setItem("UniqueID", id)
+    console.log(id);
   }
 
   const handleViewAssessment = (assessid) => {
@@ -168,9 +171,27 @@ export default function Assessment() {
       .catch((err) => {
         console.log(err);
       });
-    setOpenEdit(false);
+    setOpenEdit(false); 
   };
 
+  const AssessmentSetting = async (id) => {
+    const createAssessSetting = axios.post(`https://gray-famous-butterfly.cyclic.app/api/users/assessmentsetting-create`, {
+      AssessID: false,
+      AutoSubmit: false,
+      AutoSubmitMinimizeScreen: false,
+      ResultDisplay: false,
+      Camera: false,
+      AutoCutOff: false
+    },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          accept: "application/json",
+        },
+      }
+    )
+  }
+ 
   const DeleteAssessment = async (id) => {
     const UpdateData = await axios
       .delete(
@@ -218,6 +239,10 @@ export default function Assessment() {
     deleteBasedAssess();
     DeleteAssessment();
 
+  }
+
+  const handleAddAssessment = async() => {
+    await AddAssessment();
   }
 
   return (
@@ -274,7 +299,7 @@ export default function Assessment() {
                         variant="outlined"
                         data-bs-toggle="modal"
                         data-bs-target="#editAssess"
-                        onClick={() => handleClickOpen(row.UniqueID)}
+                        onClick={() => handleClickOpen(row.AssessID)}
                       >
                         Edit
                       </button>
@@ -284,7 +309,7 @@ export default function Assessment() {
                         variant="outlined"
                         data-bs-toggle="modal"
                         data-bs-target="#deleteAssess"
-                        onClick={() => handleDelete(row.UniqueID)}
+                        onClick={() => handleDelete(row.AssessID)}
                       >
                         Delete
                       </button>
@@ -294,7 +319,10 @@ export default function Assessment() {
                     <button
                       type="button"
                       className="btn btn-outline-info btn-sm"
-                      onClick={() => navigate("/assessment/assessmentsetting")}
+                      onClick={() => {
+                        navigate("/assessment/assessmentsetting");
+                        localStorage.setItem("Assessment Setting ID", row.AssessID)
+                    }}
                     >
                       Setting
                     </button>
@@ -492,7 +520,7 @@ export default function Assessment() {
                 <button
                   type="button"
                   className="btn btn-primary"
-                  onClick={AddAssessment}
+                  onClick={handleAddAssessment}
                 >
                   Create
                 </button>

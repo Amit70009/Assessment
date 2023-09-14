@@ -11,7 +11,6 @@ export default function HomePage() {
     
     <div>
     <h4>Hey {x.first_name} {x.last_name}, Welcome Back</h4>
-    
     </div>
 </div>
     )

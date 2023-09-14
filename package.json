@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@ant-design/icons": "^5.2.6",
     "@babel/plugin-proposal-private-property-in-object": "",
     "@emailjs/browser": "^3.10.0",
     "@emotion/react": "^11.11.1",

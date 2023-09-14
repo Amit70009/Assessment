@@ -27,7 +27,7 @@ const theme = createTheme();
 export default function SignInSide() {
   const [first_name, setFirstName] = useState(null);
   const [last_name, setLastName] = useState(null);
-  const [emp_id, setEmpid] = useState(null);
+  const [company_name, setCompanyName] = useState(null);
   const [mobile, setMobile] = useState(null);
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
@@ -43,7 +43,7 @@ export default function SignInSide() {
        email,
        password,
        gender,
-       emp_id,
+       company_name,
        mobile
       }, {headers: {
         "Content-Type": "application/json"
@@ -170,11 +170,11 @@ export default function SignInSide() {
               margin="normal"
               required
               fullWidth
-              onChange={(event) => setEmpid(event.target.value)}
+              onChange={(event) => setCompanyName(event.target.value)}
               id="phone_no."
-              label="Emp_id"
-              name="emp_id"
-              autoComplete="number"
+              label="Company Name"
+              name="Company Name"
+              autoComplete="text"
               autoFocus
             />
               <TextField
