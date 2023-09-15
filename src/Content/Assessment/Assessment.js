@@ -47,6 +47,7 @@ export default function Assessment() {
   const [assessuniqueid, setAssessUniqueID] = React.useState(false);
   const [page, setPage] = React.useState(1);
   const [currentpage, setCurrentPage] = useState(1);
+  const [addassessData, setAddAssessData] = useState([])
 
   const recordsperpage = 5;
   const lastindex = currentpage * recordsperpage;
@@ -72,10 +73,9 @@ export default function Assessment() {
   ) {
     return { AssessmentName, AssessmentID, Edit, ViewQuestion, Setting };
   }
-console.log(records);
 
-  const deleteBasedAssess = async () => {
-    const deleteData = await axios.delete(`https://gray-famous-butterfly.cyclic.app/api/users/deletequestionfromassessment/${localStorage.getItem("UniqueID")}`, {
+  const deleteBasedAssess = async (id) => {
+    const deleteData = await axios.delete(`https://gray-famous-butterfly.cyclic.app/api/users/deletequestionfromassessment/${uniqueid}`, {
       headers: {
         "Content-Type": "application/json",
         accept: "application/json",
@@ -115,12 +115,11 @@ console.log(records);
 
   const handleClickOpen = (id) => {
     setUniqueID(id);
-    console.log(uniqueid);
+  
   };
 
   const handleDelete = (id) => {
-    localStorage.setItem("UniqueID", id)
-    console.log(id);
+    setUniqueID(id);
   }
 
   const handleViewAssessment = (assessid) => {
@@ -174,28 +173,12 @@ console.log(records);
     setOpenEdit(false); 
   };
 
-  const AssessmentSetting = async (id) => {
-    const createAssessSetting = axios.post(`https://gray-famous-butterfly.cyclic.app/api/users/assessmentsetting-create`, {
-      AssessID: false,
-      AutoSubmit: false,
-      AutoSubmitMinimizeScreen: false,
-      ResultDisplay: false,
-      Camera: false,
-      AutoCutOff: false
-    },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          accept: "application/json",
-        },
-      }
-    )
-  }
+  
  
   const DeleteAssessment = async (id) => {
     const UpdateData = await axios
       .delete(
-        `https://gray-famous-butterfly.cyclic.app/api/users/deleteassessment/${localStorage.getItem("UniqueID")}`,
+        `https://gray-famous-butterfly.cyclic.app/api/users/deleteassessment/${uniqueid}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -213,7 +196,6 @@ console.log(records);
   };
 
   const AddAssessment = async (e) => {
-    // e.prevent.default();
     const local = (JSON.parse(localStorage.getItem("user-details")))
     axios
       .post(
@@ -230,7 +212,8 @@ console.log(records);
         }
       )
       .then((res) => {
-        window.location.reload();
+        // window.location.reload();
+        setAddAssessData(res.data.data.addassess);
       })
       .catch((err) => console.log(err));
   };
@@ -240,10 +223,7 @@ console.log(records);
     DeleteAssessment();
 
   }
-
-  const handleAddAssessment = async() => {
-    await AddAssessment();
-  }
+  
 
   return (
     <>
@@ -257,6 +237,7 @@ console.log(records);
         >
           Add Assessment
         </button>
+    
       </div>
       <div className="AssessmentTable">
         <TableContainer className="AssessmentTable" component={Paper}>
@@ -475,7 +456,7 @@ console.log(records);
             </div>
           
        
-        <div
+        {/* <div
           className="modal fade modal-dialog"
           id="Setting"
           data-bs-backdrop="static"
@@ -520,14 +501,16 @@ console.log(records);
                 <button
                   type="button"
                   className="btn btn-primary"
-                  onClick={handleAddAssessment}
+                  onClick={() => {
+                    // handleAddAssessment()
+                  console.log("Button CLicked")}}
                 >
                   Create
                 </button>
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
         <div
           className="modal fade"
           id="AddAssess"

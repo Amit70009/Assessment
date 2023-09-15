@@ -15,6 +15,10 @@
     
 }
 
+.cancelbtn{
+    margin-right: 1rem;
+}
+
 .cutoff{
     display: flex;
     align-items: center;
@@ -45,4 +49,9 @@
     margin-left: auto !important;
     margin-right: 10rem;
     gap: 1rem;
+}
+
+.Breadcrumbs{
+    margin-top: 1.5rem;
+    margin-left: 2rem !important;
 }
