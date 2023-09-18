@@ -21,6 +21,11 @@ import { render } from "react-dom";
 import TextField from "@mui/material/TextField";
 import axios from "axios";
 import Email from "./Email";
+import { FetchAllEmailTemplate } from "../../API/FetchAPIs/fetchAllEmailTemplateAPI"
+import { DeleteEmailTemplate } from "../../API/DeleteAPIs/deleteEmailTemplateAPI";
+import { UpdateSender } from "../../API/UpdateAPIs/UpdateSenderAPI";
+import { UpdateTemplate } from "../../API/UpdateAPIs/UpdateTemplateAPI";
+import { AddEmailTemplate } from "../../API/CreateAPIs/addEmailTemplateAPI";
 
 const EmailSetting = () => {
   const [componentDisabled, setComponentDisabled] = useState(true);
@@ -50,6 +55,8 @@ const EmailSetting = () => {
   const handleCancel = () => {
     setIsModalOpen(false);
   };
+
+
 
   // const exportHtml = () => {
   //   emailEditorRef.current.editor.exportHtml((data) => {
@@ -121,7 +128,7 @@ const EmailSetting = () => {
   };
 
   const handleSaveClick = () => {
-    UpdateSender();
+    UpdateSender(sendername, senderemail);
     setIsEditing(false);
     setComponentDisabled(true);
 
@@ -152,105 +159,8 @@ const EmailSetting = () => {
     setProfile(profilecheck);
   };
 
-  const AddEmailTemplate = async () => {
-    const get = JSON.parse(localStorage.getItem("user-details"));
-    const EmailTemplate = await axios
-      .post(
-        "https://gray-famous-butterfly.cyclic.app/api/users/email-template",
-        {
-          name: emailtemplatename,
-          userid: get.userID,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            accept: "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        window.location.reload();
-      });
-  };
-
-  const FetchEmailTemplate = async () => {
-    const x = JSON.parse(localStorage.getItem("user-details"));
-    const FetchEmail = await axios.get(
-      `https://gray-famous-butterfly.cyclic.app/api/users/email-template/allfetch/${x.userID}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          accept: "application/json",
-        },
-      }
-    );
-    setFetchEmail(FetchEmail.data.data);
-  };
-
   const handleDelete = (id) => {
     localStorage.setItem("TemplateID", id);
-  };
-
-  const DeleteEmailTemplate = async () => {
-    const FetchEmail = await axios
-      .delete(
-        `https://gray-famous-butterfly.cyclic.app/api/users/email-template/delete/${localStorage.getItem(
-          "TemplateID"
-        )}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            accept: "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        window.location.reload();
-      });
-  };
-
-  const UpdateTemplate = async () => {
-    const x = JSON.parse(localStorage.getItem("user-details"));
-    const UpdateCall = await axios
-      .patch(
-        `https://gray-famous-butterfly.cyclic.app/api/users/send-from/update/${localStorage.getItem(
-          "TemplateID"
-        )}`,
-        {
-          name: updateEmailName,
-          body: updateEmailBody,
-        },
-
-        {
-          headers: {
-            "Content-Type": "application/json",
-            accept: "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        // window.location.reload();
-        console.log(res);
-      });
-  };
-
-  const UpdateSender = async () => {
-    const x = JSON.parse(localStorage.getItem("user-details"));
-    const UpdateCall = await axios.post(
-      "https://expensive-seal-kerchief.cyclic.app/api/users/update",
-      {
-        email: x.email,
-        sendername: sendername,
-        senderemail: senderemail,
-      },
-
-      {
-        headers: {
-          "Content-Type": "application/json",
-          accept: "application/json",
-        },
-      }
-    );
   };
 
   const handleDesign = async (id) => {
@@ -258,7 +168,8 @@ const EmailSetting = () => {
     localStorage.setItem("TemplateID", id);
   }
 
-  const handleCreateUpdate = async () => {
+ 
+ const handleCreateUpdate = async () => {
    
     const updatedHtml = await exportHtml();
     // setUpdateEmailBody(updatedHtml);
@@ -273,8 +184,12 @@ const EmailSetting = () => {
   };
 
   useEffect(() => {
-    FetchEmailTemplate();
-  }, []);
+    const fetchData = async () => {
+        const data = await FetchAllEmailTemplate();
+        setFetchEmail(data);
+    };
+    fetchData();
+}, []);
 
   useEffect(() => {
     ProfileCallOnClick();
@@ -284,6 +199,9 @@ const EmailSetting = () => {
     <>
       <div className="emailsettingpage">
         <h5>Email Setting</h5>
+        <div>
+          <button>Set Instruction Page</button>
+        </div>
         <Breadcrumbs aria-label="breadcrumb">
           <Link underline="hover" color="inherit" href="/email">
             Email
@@ -377,6 +295,7 @@ const EmailSetting = () => {
               Create New Template
             </button>
           </div>
+         
         </div>
         <div className="template-table">
           <TableContainer className="AssessmentTable" component={Paper}>
@@ -390,6 +309,7 @@ const EmailSetting = () => {
                   <TableCell>Template Name</TableCell>
                
                   <TableCell align="center">Design</TableCell>
+               
                   <TableCell align="center">Action</TableCell>
                 </TableRow>
               </TableHead>
@@ -511,7 +431,7 @@ const EmailSetting = () => {
                 <button
                   type="button"
                   class="btn btn-primary"
-                  onClick={() => AddEmailTemplate()}
+                  onClick={() => AddEmailTemplate(emailtemplatename)}
                 >
                   Create
                 </button>
@@ -562,7 +482,7 @@ const EmailSetting = () => {
                 <button
                   type="button"
                   class="btn btn-primary"
-                  onClick={() => UpdateTemplate()}
+                  onClick={() => UpdateTemplate(updateEmailName, updateEmailBody)}
                 >
                   Update
                 </button>

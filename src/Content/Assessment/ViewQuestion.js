@@ -29,7 +29,8 @@ import { Button, Drawer, Space  } from "antd";
 import { toggleButtonGroupClasses } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { UilEdit } from '@iconscout/react-unicons'
-
+import { FetchAllQuestion } from "../../API/FetchAPIs/fetchAllQuestionAPI";
+import { DeleteQuestion } from "../../API/DeleteAPIs/deleteQuestionAPI";
 
 export default function AssessmentSetting() {
   const [fetch, setFetch] = React.useState([]);
@@ -127,22 +128,22 @@ export default function AssessmentSetting() {
     window.location.reload()
   };
 
-  const FetchAllQuestion = async () => {
-    const AssessmentData = await axios.get(
-      `https://gray-famous-butterfly.cyclic.app/api/users/fetchallquestion?assessid=${localStorage.getItem(
-        "Assessment ID"
-      )}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          accept: "application/json",
-        },
-      }
-    )
-    setFetch(AssessmentData.data.Data);
+  // const FetchAllQuestion = async () => {
+  //   const AssessmentData = await axios.get(
+  //     `https://gray-famous-butterfly.cyclic.app/api/users/fetchallquestion?assessid=${localStorage.getItem(
+  //       "Assessment ID"
+  //     )}`,
+  //     {
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         accept: "application/json",
+  //       },
+  //     }
+  //   )
+  //   setFetch(AssessmentData.data.Data);
 
     
-  };
+  // };
 
   const FetchAQuestion = async (id) => {
 
@@ -326,27 +327,15 @@ export default function AssessmentSetting() {
     };
   };
 
+  const handleDelete = () => {
+    const DeleteQues = async() =>{
+      const DeleteData = await DeleteQuestion(quesuniqueid);
+      setOpenEdit(false);
+    };
+    DeleteQues();
+  }
 
-  const DeleteQuestion = async (id) => {
-    const AssessmentData = await axios
-      .delete(
-        `https://gray-famous-butterfly.cyclic.app/api/users/deletequestion/${quesuniqueid}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            accept: "application/json",
-          },
-        }
-      )
-      .then((res) => {
-      
-        window.location.reload();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    setOpenEdit(false);
-  };
+  
 
   
   const handleEditQuestion = (id) => {
@@ -364,7 +353,11 @@ export default function AssessmentSetting() {
   }
 
   useEffect(() => {
-    FetchAllQuestion();
+    const FetchAllQuest = async() => {
+      const fetchData = await FetchAllQuestion();
+      setFetch(fetchData)
+    }
+    FetchAllQuest();
   }, []);
 
   useEffect(() => {
@@ -611,7 +604,7 @@ export default function AssessmentSetting() {
                 <button
                   type="button"
                   className="btn btn-secondary"
-                  onClick={DeleteQuestion}
+                  onClick={() => handleDelete()}
                 >
                   {" "}
                   Delete

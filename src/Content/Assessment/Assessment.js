@@ -35,7 +35,11 @@ import ListItemText from "@mui/material/ListItemText";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import { Pages } from "@mui/icons-material";
-
+import { deleteBasedAssess } from "../../API/DeleteAPIs/deleteQuestionFromAssessmentAPI";
+import { FetchAllAssessment } from "../../API/FetchAPIs/fetchAllAssessmentAPI";
+import { UpdateAssessment } from "../../API/UpdateAPIs/updateAssessmentAPI";
+import { AddAssessment } from "../../API/CreateAPIs/addAssessmentAPI";
+import { DeleteAssessment } from "../../API/DeleteAPIs/deleteAssessmentAPI";
 export default function Assessment() {
   const { UniqueID } = useParams();
   const [fetch, setFetch] = React.useState([]);
@@ -74,48 +78,39 @@ export default function Assessment() {
     return { AssessmentName, AssessmentID, Edit, ViewQuestion, Setting };
   }
 
-  const deleteBasedAssess = async (id) => {
-    const deleteData = await axios.delete(`https://gray-famous-butterfly.cyclic.app/api/users/deletequestionfromassessment/${uniqueid}`, {
-      headers: {
-        "Content-Type": "application/json",
-        accept: "application/json",
-      },
-    }
-  ).then((res) => {
-    window.location.reload();
-  })
-  .catch((err) => {
-    console.log(err);
-  });
-  }
+  // const FetchAllAssessment = async () => {
+  //   setIsLoading(true);
+  //   const local = (JSON.parse(localStorage.getItem("user-details")))
+  //   const AssessmentData = await axios.get(
+  //     `https://gray-famous-butterfly.cyclic.app/api/users/fetchallassessment/${local.senderid}`,
+  //     {
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         accept: "application/json",
+  //       },
+  //       data: {
 
-  const FetchAllAssessment = async () => {
-    setIsLoading(true);
-    const local = (JSON.parse(localStorage.getItem("user-details")))
-    const AssessmentData = await axios.get(
-      `https://gray-famous-butterfly.cyclic.app/api/users/fetchallassessment/${local.senderid}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          accept: "application/json",
-        },
-        data: {
-
-        }
-      }
-    );
-    setFetch(AssessmentData.data.data);
-    // console.log(AssessmentData.data.data);
-    setIsLoading(false);
-  };
+  //       }
+  //     }
+  //   );
+  //   setFetch(AssessmentData.data.data);
+  //   // console.log(AssessmentData.data.data);
+  //   setIsLoading(false);
+  // };
 
   useEffect(() => {
-    FetchAllAssessment(fetch);
+    setIsLoading(true);
+    const fetchAllAssess = async () => {
+      const fetchData = await FetchAllAssessment();
+      setFetch(fetchData);
+      setIsLoading(false);
+    }
+    fetchAllAssess();
   }, []);
+  
 
   const handleClickOpen = (id) => {
     setUniqueID(id);
-  
   };
 
   const handleDelete = (id) => {
@@ -150,81 +145,29 @@ export default function Assessment() {
       setCurrentPage(currentpage + 1);
     }
   }
-  const UpdateAssessment = async (id) => {
-    const UpdateData = await axios
-      .put(
-        `https://gray-famous-butterfly.cyclic.app/api/users/updateassessment/${uniqueid}`,
-        {
-          AssessmentName: assessmentname,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            accept: "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        window.location.reload();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    setOpenEdit(false); 
-  };
 
-  
- 
-  const DeleteAssessment = async (id) => {
-    const UpdateData = await axios
-      .delete(
-        `https://gray-famous-butterfly.cyclic.app/api/users/deleteassessment/${uniqueid}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            accept: "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        window.location.reload();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    setOpenEdit(false);
-  };
-
-  const AddAssessment = async (e) => {
-    const local = (JSON.parse(localStorage.getItem("user-details")))
-    axios
-      .post(
-        "https://gray-famous-butterfly.cyclic.app/api/users/addassessment",
-        {
-          AssessmentName: assessmentname,
-          UserID: local.senderid
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            accept: "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        // window.location.reload();
-        setAddAssessData(res.data.data.addassess);
-      })
-      .catch((err) => console.log(err));
-  };
+  const handleAddAssessment = () => {
+    const addAssessment = async() => {
+      const AddData = await AddAssessment(assessmentname);
+      setAddAssessData(AddData);
+      window.location.reload();
+    };
+    addAssessment();
+  }
 
   const handleDeleteAll = () => {
-    deleteBasedAssess();
-    DeleteAssessment();
-
+    deleteBasedAssess(uniqueid);
+    DeleteAssessment(uniqueid);
   }
-  
 
+  const handleUpdate = () => {
+    const updateAssessment = async() => {
+    const updateData = await UpdateAssessment(uniqueid, assessmentname);
+    setOpenEdit(false); 
+  };
+  updateAssessment();
+}
+  
   return (
     <>
       <div className="Assessment" onLoad={FetchAllAssessment}>
@@ -282,6 +225,7 @@ export default function Assessment() {
                         data-bs-target="#editAssess"
                         onClick={() => handleClickOpen(row.AssessID)}
                       >
+                        
                         Edit
                       </button>
                       <button
@@ -390,7 +334,7 @@ export default function Assessment() {
                 <button
                   type="button"
                   className="btn btn-primary"
-                  onClick={UpdateAssessment}
+                  onClick={() => handleUpdate()}
                 >
                   Update
                 </button>
@@ -556,7 +500,7 @@ export default function Assessment() {
                 <button
                   type="button"
                   className="btn btn-primary"
-                  onClick={AddAssessment}
+                  onClick={() => handleAddAssessment()}
                 >
                   Create
                 </button>

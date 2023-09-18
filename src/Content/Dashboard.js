@@ -33,7 +33,7 @@ export default function DashBoard() {
 <Route  path='/email' element={<EmailPage />}></Route>
 <Route  path='/setting' element={<SettingPage />}></Route>
 <Route  path='/assessment/assessmentsetting' element={<AssessSetting />}></Route>
-<Route  path='/setting/viewquestion' element={<ViewQuestion />}></Route>
+<Route  path='/setting/viewquestion/' element={<ViewQuestion />}></Route>
 <Route  path='/email/emailsetting' element={<EmailSetting />}></Route>
 </Routes>
 </div>

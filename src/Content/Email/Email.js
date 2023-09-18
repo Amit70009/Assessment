@@ -27,6 +27,10 @@ import {
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
+import { FetchAllEmailTemplate } from "../../API/FetchAPIs/fetchAllEmailTemplateAPI";
+import { FetchEmailTemplate } from "../../API/FetchAPIs/fetchEmailTemplateAPI";
+import { ProfileCallOnClick } from "../../API/FetchAPIs/fetchProfileAPI";
+import { FetchAllAssessment } from "../../API/FetchAPIs/fetchAllAssessmentAPI";
 
 // import Select from '@mui/material/Select';
 
@@ -100,28 +104,6 @@ export default function Email({ fetchassessment }) {
     console.log("click left button", e);
   };
 
-  // console.log(fetchassessment);
-
-  const ProfileCallOnClick = async () => {
-    const x = JSON.parse(localStorage.getItem("user-details"));
-
-    const ProfileCall = await axios.get(
-      "https://expensive-seal-kerchief.cyclic.app/api/users/profile",
-      {
-        params: { email: x.email },
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          accept: "application/json",
-        },
-      }
-    );
-    const profilecheck = await ProfileCall.data.data.matchUser;
-    setProfile(profilecheck);
-  };
-
-  
   const sendEmail = async () => {
     const { sendername, senderemail } = profile;
     const x = JSON.parse(localStorage.getItem("user-details"));
@@ -167,52 +149,18 @@ export default function Email({ fetchassessment }) {
     
 
   useEffect(() => {
+    const fetchProfile = async () => {
+      const fetchData = await ProfileCallOnClick();
+      setProfile(fetchData)
+    }
+
     ProfileCallOnClick();
-    FetchAllEmailTemplate();
+    const fetchData = async () => {
+      const data = await FetchAllEmailTemplate();
+      setAllEmailTemplate(data);
+  };
+  fetchData();
   }, []);
-
-  const FetchAllEmailTemplate = async () => {
-    const x = JSON.parse(localStorage.getItem("user-details"));
-    const FetchEmail = await axios.get(
-      `https://gray-famous-butterfly.cyclic.app/api/users/email-template/allfetch/${x.userID}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          accept: "application/json",
-        },
-      }
-    );
-    setAllEmailTemplate(FetchEmail.data.data);
-  };
-
-  const FetchEmailTemplate = async () => {
-    const x = localStorage.getItem("TemplateID");
-    const FetchEmail = await axios.get(
-      `https://gray-famous-butterfly.cyclic.app/api/users/email-template/fetch/${x}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          accept: "application/json",
-        },
-      }
-    );
-    setEmailTemplate(FetchEmail.data.data[0].body);
-
-  };
-
-  const FetchAllAssessment = async () => {
-    const x = JSON.parse(localStorage.getItem("user-details"));
-    const AssessmentData = await axios.get(
-      `https://gray-famous-butterfly.cyclic.app/api/users/fetchallassessment/${x.senderid}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          accept: "application/json",
-        },
-      }
-    );
-    setFetch(AssessmentData.data.data);
-  };
 
   const FetchWebhook = async () => {
     setIsLoading(true);
@@ -278,9 +226,29 @@ export default function Email({ fetchassessment }) {
   }, []);
 
   const handleSendButton = () => {
-    FetchAllAssessment();
-    FetchAllEmailTemplate();
+    const fetchAssessments = async () => {
+      const fetchAssess = await FetchAllAssessment();
+      setFetch(fetchAssess);
+    };
+  
+    const fetchEmailTemplates = async () => {
+      const fetchEmail = await FetchAllEmailTemplate();
+      // Assuming there's a setFetchEmail function to update state for email templates
+      setEmailTemplate(fetchEmail);
+    };
+  
+    fetchAssessments();
+    fetchEmailTemplates();
   };
+  
+
+  const hanldeFetchEmail = () => {
+    const fetch = async () => {
+      const fetchData = await FetchEmailTemplate();
+      setEmailTemplate(fetchData);
+    };
+    fetch();
+  }
 
   const handleChange1 = (value) => {
     setSelectedValue(value);
@@ -488,7 +456,7 @@ export default function Email({ fetchassessment }) {
                 class="btn btn-primary"
                 data-bs-target="#exampleModalToggle2"
                 data-bs-toggle="modal"
-                onClick={() => FetchEmailTemplate()}
+                onClick={() => hanldeFetchEmail()}
               >
                 Select Recipient
               </button>
