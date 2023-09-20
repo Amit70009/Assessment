@@ -393,7 +393,7 @@ export default function Setting() {
       const ProfileCall = await axios.get(
         "https://expensive-seal-kerchief.cyclic.app/api/users/profile",
         {
-          params: { email: x.email },
+          params: { email: x?.email },
         },
         {
           headers: {
@@ -414,7 +414,7 @@ export default function Setting() {
   const UpdateProfile = async () => {
     const x = JSON.parse(localStorage.getItem("user-details"));
     const updatedFields = {
-      email: x.email,
+      email: x?.email,
     };
     if (firstname) updatedFields.first_name = firstname;
     if (lastname) updatedFields.last_name = lastname;

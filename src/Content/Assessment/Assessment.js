@@ -78,26 +78,6 @@ export default function Assessment() {
     return { AssessmentName, AssessmentID, Edit, ViewQuestion, Setting };
   }
 
-  // const FetchAllAssessment = async () => {
-  //   setIsLoading(true);
-  //   const local = (JSON.parse(localStorage.getItem("user-details")))
-  //   const AssessmentData = await axios.get(
-  //     `https://gray-famous-butterfly.cyclic.app/api/users/fetchallassessment/${local.senderid}`,
-  //     {
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         accept: "application/json",
-  //       },
-  //       data: {
-
-  //       }
-  //     }
-  //   );
-  //   setFetch(AssessmentData.data.data);
-  //   // console.log(AssessmentData.data.data);
-  //   setIsLoading(false);
-  // };
-
   useEffect(() => {
     setIsLoading(true);
     const fetchAllAssess = async () => {
@@ -107,6 +87,13 @@ export default function Assessment() {
     }
     fetchAllAssess();
   }, []);
+
+  useEffect(() => {
+    if(!localStorage.getItem("user-details")){
+        navigate("/login");
+        console.log("check");
+    } 
+}, [])
   
 
   const handleClickOpen = (id) => {

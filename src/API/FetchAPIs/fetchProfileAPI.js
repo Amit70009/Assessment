@@ -6,7 +6,7 @@ const ProfileCallOnClick = async () => {
     const ProfileCall = await axios.get(
       "https://expensive-seal-kerchief.cyclic.app/api/users/profile",
       {
-        params: { email: x.email },
+        params: { email: x?.email },
       },
       {
         headers: {
