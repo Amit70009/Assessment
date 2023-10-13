@@ -14,6 +14,18 @@
     align-items: center !important;
 }
 
+.header{
+    display: flex;
+    align-items: center !important;
+    margin-bottom: 0.3rem !important;
+}
+
+.headerButton{
+    margin-left: auto !important;
+    margin-right: 2rem !important;
+    align-items: center !important;
+}
+
 .button-save{
    margin-right: 0.5rem;
   }
@@ -34,7 +46,6 @@
 .create-button{
     margin-left: auto;
     margin-right: 3rem;
-    
 }
 
 .template-table{

@@ -87,13 +87,6 @@ export default function Assessment() {
     }
     fetchAllAssess();
   }, []);
-
-  useEffect(() => {
-    if(!localStorage.getItem("user-details")){
-        navigate("/login");
-        console.log("check");
-    } 
-}, [])
   
 
   const handleClickOpen = (id) => {

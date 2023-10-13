@@ -22,6 +22,7 @@ import {
 import { Collapse, Select, Form, Input, Col, Row, message, Upload } from "antd";
 import { UploadChangeParam } from "antd/es/upload";
 import { RcFile, UploadFile, UploadProps } from "antd/es/upload/interface";
+import { Button, Space } from 'antd';
 
 const { Option } = Select;
 
@@ -103,7 +104,7 @@ export default function Setting() {
   const [firstname, setFirstName] = useState("");
   const [lastname, setLastName] = useState("");
   const [mobileNo, setMobileNo] = useState("");
-
+ 
   const handleChange = (info) => {
     if (info.file.status === "uploading") {
       setLoading(true);
@@ -176,6 +177,8 @@ export default function Setting() {
     setOrgEditID(-1)
     // Add your update logic here
   };
+
+
 
   const handleProfileUpload = () => {
     const formData = new FormData()
@@ -473,6 +476,7 @@ const UpdateOrgProfile = async () => {
           items={items}
         />
       </div>
+    
     </>
   );
 }

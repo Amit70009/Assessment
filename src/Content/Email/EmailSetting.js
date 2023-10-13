@@ -69,25 +69,26 @@ const EmailSetting = () => {
   return new Promise((resolve) => {
     emailEditorRef.current.editor.exportHtml((data) => {
       const { design, html } = data;
-      // console.log('exportHtml', html);
       resolve(html);
       setUpdateEmailBody(html);
-      // console.log("HTML", html);
-      // console.log("Updated EMail", updateEmailBody);
     });
   });
 };
 
-  const onReady = (unlayer) => {
-    // editor is ready
-    // you can load your template here;
-    // the design json can be obtained by calling
-    // unlayer.loadDesign(callback) or unlayer.exportHtml(callback)
+const onReady: EmailEditorProps['onReady'] = (unlayer) => {
 
-    // const templateJson = {updateEmailBody};
-    // unlayer.loadDesign(updateEmailBody);
-    // console.log(updateEmailBody);
-  };
+}
+
+  // const onReady = (unlayer) => {
+  //   // editor is ready
+  //   // you can load your template here;
+  //   // the design json can be obtained by calling
+  //   // unlayer.loadDesign(callback) or unlayer.exportHtml(callback)
+
+  //   // const templateJson = {updateEmailBody};
+  //   // unlayer.loadDesign(updateEmailBody);
+  //   // console.log(updateEmailBody);
+  // };
 
   const handleHtmlChange = (event) => {
     setHtmlCode(event.target.value);
@@ -168,14 +169,21 @@ const EmailSetting = () => {
     localStorage.setItem("TemplateID", id);
   }
 
+  const handleInstruction = async (id) => {
+    showModal();
+  }
+
  
  const handleCreateUpdate = async () => {
    
     const updatedHtml = await exportHtml();
+    // console.log(updatedHtml);
+    console.log("Email Template", updateEmailBody);
+    UpdateTemplate(updateEmailName, updateEmailBody)
     // setUpdateEmailBody(updatedHtml);
-    console.log("Test call", test);
-    // console.log(updatedHtml); // Wait for exportHtml to complete
-  //  await UpdateTemplate();
+    // console.log("Test call", test);
+   console.log(updatedHtml); // Wait for exportHtml to complete
+   await UpdateTemplate(updateEmailName, updatedHtml);
     // setIsModalOpen(false);
   };
 
@@ -198,9 +206,11 @@ const EmailSetting = () => {
   return (
     <>
       <div className="emailsettingpage">
+        <div className="header">
         <h5>Email Setting</h5>
-        <div>
-          <button>Set Instruction Page</button>
+        <div className="headerButton">
+          <button className="btn btn-outline-success btn-sm " onClick={() => handleInstruction()}>Set Instruction Page</button>
+        </div>
         </div>
         <Breadcrumbs aria-label="breadcrumb">
           <Link underline="hover" color="inherit" href="/email">
@@ -386,7 +396,7 @@ const EmailSetting = () => {
 
             <EmailEditor ref={emailEditorRef} onReady={onReady} />
           </div>
-          //{" "}
+          {" "}
         </Modal>
         <div
           class="modal fade"

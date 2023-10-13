@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMessage } from "react";
 import Sidebarr from './Sidebar/Sidebar'
 import HomePage from "./Home/Home";
 import ResultPage from "./Result/Result"
@@ -13,10 +13,14 @@ import ViewQuestion from "./Assessment/ViewQuestion";
 import EmailPage from "./Email/Email"
 import EmailSetting from "./Email/EmailSetting"
 import { withAuth } from "../withAuth"
+import Snackbar from '@mui/material/Snackbar';
+import Box from '@mui/material/Box';
+
 
 
 
 export default function DashBoard() {
+    const [showSnackbar, setShowSnackbar] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -25,6 +29,7 @@ export default function DashBoard() {
 
         if(!localStorage.getItem("user-details")){
             localStorage.setItem("last-location", location.pathname);
+            sessionStorage.removeItem("loginErrorMessageDisplayed", "true")
             navigate("/login");
         } else if (lastLocation) {
             localStorage.removeItem("last-location");
@@ -32,8 +37,12 @@ export default function DashBoard() {
         }
     }, [location, navigate])
 
+    const handleCloseSnackbar = () => {
+        setShowSnackbar(false);
+    };
     return(
         <>
+        
        <div className="GlassAppMain">
         <div className="AppGlass">
 <Sidebarr/>
@@ -57,6 +66,14 @@ export default function DashBoard() {
 
         </div>
        </div>
+       <Box sx={{ width: 500 }}>
+                <Snackbar
+                    open={showSnackbar}
+                    autoHideDuration={6000}
+                    onClose={handleCloseSnackbar}
+                    message="You have returned to the login page"
+                />
+                </Box>
         </>
     )
 }

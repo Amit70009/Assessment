@@ -9,13 +9,6 @@ export default function HomePage() {
 
     const x = JSON.parse(localStorage.getItem("user-details"));
 
-    useEffect(() => {
-        if(!localStorage.getItem("user-details")){
-            navigate("/login");
-            console.log("check");
-        } 
-    }, [])
-
     
     return (
 <div className="MainPage">

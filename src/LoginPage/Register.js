@@ -27,7 +27,7 @@ const theme = createTheme();
 export default function SignInSide() {
   const [first_name, setFirstName] = useState(null);
   const [last_name, setLastName] = useState(null);
-  const [company_name, setCompanyName] = useState(null);
+  const [companyname, setCompanyName] = useState(null);
   const [mobile, setMobile] = useState(null);
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
@@ -43,7 +43,7 @@ export default function SignInSide() {
        email,
        password,
        gender,
-       company_name,
+       companyname,
        mobile
       }, {headers: {
         "Content-Type": "application/json"

@@ -258,7 +258,7 @@ export default function Email({ fetchassessment }) {
     const updatedData = [];
 
     const updateData = async (email, event, timestamp) => {
-      const existingData = updatedData.find((web) => web?.email === email);
+      const existingData = updatedData.find((web) => web.email === email);
 
       if (existingData) {
         if (timestamp > existingData.timestamp) {

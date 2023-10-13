@@ -8,7 +8,7 @@ const UpdateTemplate = async (updateEmailName, updateEmailBody) => {
           "TemplateID"
         )}`,
         {
-          name: updateEmailName,
+         name: updateEmailName,
           body: updateEmailBody,
         },
 
@@ -20,7 +20,7 @@ const UpdateTemplate = async (updateEmailName, updateEmailBody) => {
         }
       )
       .then((res) => {
-        window.location.reload();
+        // window.location.reload();
     
       });
   };

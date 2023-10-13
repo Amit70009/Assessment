@@ -15,7 +15,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import AppBar from './AppBar'
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Route } from 'react-router-dom';
 import Stack from '@mui/material/Stack';
 
@@ -41,6 +41,8 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignInSide() {
+  const location = useLocation()
+  const [showSnackbar, setShowSnackbar] = useState(false);
  const [sbOpen, setsbOpen] = React.useState(false)
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
@@ -58,12 +60,13 @@ export default function SignInSide() {
   const handleClick = () => {
     setsbOpen(true);
   };
+  
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;
     }
-
     setsbOpen(false);
+    sessionStorage.setItem("loginErrorMessageDisplayed", "true");
   };
 
   const Alert = React.forwardRef(function Alert(props, ref) {
@@ -75,6 +78,17 @@ export default function SignInSide() {
         Navigate('/home')
     }
   })
+  useEffect(() => {
+const isMessageDisplayed = sessionStorage.getItem("loginErrorMessageDisplayed")
+
+    if(!localStorage.getItem("user-details") && localStorage.getItem("last-location") && !isMessageDisplayed){
+        setsbMessage("You have returned to Login Page. Please login to continue.")
+        setsbSeverity("error")
+        handleClick();
+    } 
+}, [])
+
+
   const loginFunction = async() => {
     if(email && password){
       const loginCall = await axios.post("https://expensive-seal-kerchief.cyclic.app/api/users/login", {
@@ -222,7 +236,6 @@ export default function SignInSide() {
           {sbMessage}
         </Alert>
       </Snackbar>
-     
       </>
   );
 }
