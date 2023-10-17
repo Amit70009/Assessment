@@ -50,10 +50,12 @@ export default function SignInSide() {
       }})
       if(registercall && registercall.data && registercall.data.status !== 200){
         alert(registercall.data.message)
+        console.log("Working");
       }
       else if (registercall && registercall.data && registercall.data.status == 200){
         alert(registercall.data.message)
         navig("/login")
+        console.log("Working");
       }
      
   }
